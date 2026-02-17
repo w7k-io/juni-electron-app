@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: juni-electron-app
+  annotations:
+    github.com/project-slug: w7k-io/juni-electron-app
+    grafana/tag-selector: juni-electron-app
+    grafana/alert-label-selector: app=juni-electron-app
+    sonarqube.org/project-key: sonarcloud/w7k-io_juni-electron-app
+spec:
+  type: application
+  lifecycle: production
+  owner: kagron
+  dependsOn:
+    - component:juni-app

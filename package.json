@@ -1,0 +1,48 @@
+{
+  "name": "juni-electron",
+  "version": "2.572.92",
+  "description": "Juni Electron Desktop Application",
+  "author": "Wistiteek",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/w7k-io/juni-electron-app.git"
+  },
+  "private": true,
+  "main": "dist/main/index.js",
+  "type": "commonjs",
+  "config": {
+    "forge": "./forge.config.js"
+  },
+  "scripts": {
+    "build:ts": "tsc",
+    "start": "yarn build:ts && electron-forge start",
+    "start:local": "yarn build:ts && JUNI_DEVTOOLS=true JUNI_FRONTEND_URL=http://localhost:3000 JUNI_BACKEND_URL=http://localhost:8080 electron-forge start",
+    "package": "yarn build:ts && electron-forge package",
+    "make": "yarn build:ts && electron-forge make",
+    "publish": "yarn build:ts && electron-forge publish",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.11.1",
+    "@electron-forge/maker-dmg": "^7.11.1",
+    "@electron-forge/maker-zip": "^7.11.1",
+    "@electron-forge/publisher-github": "^7.11.1",
+    "@electron/notarize": "^3.1.1",
+    "@electron/osx-sign": "^2.3.0",
+    "@playwright/test": "^1.56.0",
+    "@tsconfig/node22": "^22.0.5",
+    "@types/node": "^25.2.3",
+    "electron": "^37.2.3",
+    "glob": "^11.0.3",
+    "jest": "^30.1.3",
+    "playwright": "^1.56.0",
+    "ts-jest": "^29.4.6",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "yarn@4.9.4+sha512.7b1cb0b62abba6a537b3a2ce00811a843bea02bcf53138581a6ae5b1bf563f734872bd47de49ce32a9ca9dcaff995aa789577ffb16811da7c603dcf69e73750b"
+}

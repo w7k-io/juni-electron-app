@@ -1,0 +1,20 @@
+node_modules/
+dist/
+out/
+*.log
+.DS_Store
+/.idea/
+/.yarn/
+
+# Private project config
+/CLAUDE.md
+/.claude/
+/docs/project_notes/
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
+app-under-test/
+juni-login-*.png
+*.mov

@@ -1,0 +1,73 @@
+name: Test Components (Reusable)
+
+on:
+  workflow_call:
+    secrets:
+      NPM_TOKEN:
+        description: 'GitHub Packages NPM token'
+        required: true
+    outputs:
+      tests_passed:
+        description: "Indique si tous les tests sont passés"
+        value: ${{ jobs.test-summary.outputs.all_passed }}
+
+jobs:
+  unit-tests:
+    name: Unit Tests Jest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: w7k-io/w7k-io-gh/setup-node-npm@main
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build TypeScript
+        run: yarn build:ts
+
+      - name: Run Jest Tests
+        run: |
+          echo "Tests unitaires Jest..."
+          yarn test --passWithNoTests --ci --coverage --watchAll=false
+        env:
+          CI: true
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ github.sha }}
+          path: coverage/
+          retention-days: 7
+
+  test-summary:
+    name: Tests Summary
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    if: always()
+    outputs:
+      all_passed: ${{ steps.check.outputs.all_passed }}
+
+    steps:
+      - name: Check test results
+        id: check
+        run: |
+          echo "Resume des tests:"
+          echo "  - Unit Tests: ${{ needs.unit-tests.result }}"
+
+          if [[ "${{ needs.unit-tests.result }}" == "success" ]]; then
+            echo "Tous les tests sont passes!"
+            echo "all_passed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Certains tests ont echoue"
+            echo "all_passed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi

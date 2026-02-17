@@ -1,0 +1,78 @@
+name: E2E Tests macOS
+
+on:
+  workflow_call:
+    inputs:
+      artifact_name:
+        description: "Nom de l'artifact (ZIP)"
+        required: true
+        type: string
+    secrets:
+      NPM_TOKEN:
+        required: true
+
+jobs:
+  test:
+    name: Playwright E2E
+    runs-on:
+      - self-hosted
+      - macOS
+      - ARM64
+
+    steps:
+      - name: Checkout (for test scripts)
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: w7k-io/w7k-io-gh/setup-node-npm@main
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+          npx playwright install --with-deps
+
+      - name: Download ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ./test-artifacts
+
+      - name: Prepare App for Testing
+        run: |
+          ZIP_FILE=$(find ./test-artifacts -name "*.zip" | head -1)
+          echo "Testing ZIP: $ZIP_FILE"
+          make prepare-test ZIP_FILE="$ZIP_FILE"
+
+      - name: Run Playwright Tests
+        run: make run-test
+        timeout-minutes: 5
+
+      - name: List Test Artifacts
+        if: always()
+        run: |
+          echo "Playwright report:"
+          ls -la playwright-report/ 2>/dev/null || echo "playwright-report/ not found"
+          echo ""
+          echo "Test results:"
+          ls -la test-results/ 2>/dev/null || echo "test-results/ not found"
+          echo ""
+          echo "Screenshots:"
+          ls -la juni-login-*.png 2>/dev/null || echo "No screenshots found"
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results-macos
+          path: |
+            playwright-report/
+            test-results/
+            juni-login-*.png
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Cleanup
+        if: always()
+        run: make clean

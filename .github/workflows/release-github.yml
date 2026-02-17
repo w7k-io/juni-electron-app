@@ -1,0 +1,108 @@
+name: GitHub Release (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: "Version de la release (avec -beta.X pour pre-release)"
+        required: true
+        type: string
+      artifact_name:
+        description: "Nom de l'artifact ZIP"
+        required: true
+        type: string
+      prerelease:
+        description: "Marquer comme pre-release (true par défaut)"
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      NPM_GITHUB_TOKEN:
+        required: true
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.NPM_GITHUB_TOKEN }}
+
+      - name: Download ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ./release-zip
+
+      - name: List release files
+        run: |
+          echo "Fichiers ZIP:"
+          ls -la ./release-zip/ || echo "Aucun ZIP"
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          echo "# Juni Electron v${{ inputs.version }}" > release-notes.md
+          echo "" >> release-notes.md
+          echo "## Installation" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "### macOS" >> release-notes.md
+          echo "Téléchargez le fichier ZIP ci-dessous, décompressez-le et glissez Juni.app dans Applications." >> release-notes.md
+          echo "Ce build universel fonctionne sur:" >> release-notes.md
+          echo "- **Apple Silicon** (M1/M2/M3/M4)" >> release-notes.md
+          echo "- **Intel**" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "## Auto-update" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "Les mises à jour sont automatiques via Squirrel.Mac." >> release-notes.md
+          echo "" >> release-notes.md
+          echo "## Changements" >> release-notes.md
+          echo "" >> release-notes.md
+
+          # Récupérer les commits depuis la dernière release
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then
+            echo "### Commits depuis $LAST_TAG" >> release-notes.md
+            git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" >> release-notes.md
+          else
+            echo "### Commits récents" >> release-notes.md
+            git log -10 --pretty=format:"- %s (%h)" >> release-notes.md
+          fi
+
+          echo "" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "---" >> release-notes.md
+          echo "*Release automatique - $(date +'%Y-%m-%d %H:%M:%S')*" >> release-notes.md
+
+      - name: Commit version bump
+        uses: w7k-io/w7k-io-gh/bump-version@main
+        with:
+          version: ${{ inputs.version }}
+          token: ${{ secrets.NPM_GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ inputs.version }}
+          name: Juni Electron v${{ inputs.version }}
+          body_path: release-notes.md
+          draft: false
+          prerelease: ${{ inputs.prerelease }}
+          files: ./release-zip/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+
+      - name: Release Summary
+        run: |
+          echo "Release créée avec succès!"
+          echo "  Version: v${{ inputs.version }}"
+          echo "  URL: https://github.com/${{ github.repository }}/releases/tag/v${{ inputs.version }}"
+          echo ""
+          echo "Fichiers publiés:"
+          echo "  - ZIP universel pour installation + auto-update"

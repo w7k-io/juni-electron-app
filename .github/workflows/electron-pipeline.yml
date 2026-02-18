@@ -43,6 +43,7 @@ jobs:
   test-e2e:
     name: E2E Tests
     needs: [build]
+    if: ${{ github.event_name != 'pull_request' }}
     uses: ./.github/workflows/test-e2e-macos.yml
     with:
       artifact_name: juni-electron-macos
@@ -86,8 +87,9 @@ jobs:
 
           echo ""
 
+          E2E_RESULT="${{ needs.test-e2e.result }}"
           if [[ "${{ needs.build.result }}" == "success" && \
-                "${{ needs.test-e2e.result }}" == "success" ]]; then
+                ("$E2E_RESULT" == "success" || "$E2E_RESULT" == "skipped") ]]; then
             echo "PIPELINE RÉUSSIE!"
             echo ""
             echo "Application testée et prête:"

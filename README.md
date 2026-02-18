@@ -1,88 +1,93 @@
 # Juni Electron Desktop Application
 
-Application desktop Juni pour l'analyse vidéo handball.
+Application desktop Juni pour l'analyse video handball.
 
-## 🚀 Développement
+## Developpement
 
 ```bash
-# Installer les dépendances
-corepack yarn install
+# Installer les dependances
+npm ci
 
-# Démarrer en mode développement
-corepack yarn start
+# Demarrer en mode developpement (DevTools + localhost)
+export JUNI_DEVTOOLS=true
+export JUNI_FRONTEND_URL=http://localhost:3000
+export JUNI_BACKEND_URL=http://localhost:8080
+npm run start:local
 
-# Construire l'application
-corepack yarn dist
+# Demarrer en mode production (https://juni.w7k.app)
+npm start
+
+# Construire le ZIP Universal (arm64 + x64)
+npm run make
 ```
 
-## 🏗️ Architecture
+## Architecture
 
-- **Electron 37 LTS** pour la stabilité
-- **Frontend React** connecté à l'API Juni
-- **Binaires natifs** : ONNX Runtime, Sharp, FFmpeg
+- **Electron 37 LTS** pour la stabilite
+- **Frontend React** connecte a l'API Juni (pur wrapper, zero logique metier)
 - **Signature macOS** avec certificats Apple
+- **Auto-update** via Squirrel.Mac + update.electronjs.org
 
-## 🔄 CI/CD
+## CI/CD
 
-Le projet utilise GitHub Actions avec les actions centralisées [w7k-io-gh](https://github.com/w7k-io/w7k-io-gh).
+Le projet utilise GitHub Actions avec des runners GitHub-hosted (`macos-latest`).
 
 ### Pipeline
 
 ```
-push main → Unit Tests → Build DMG → E2E Tests → Commit version → Pre-release
+push main -> Unit Tests -> Build ZIP Universal -> E2E Tests -> Release stable -> Version bump
 ```
+
+### Workflows
+
+| Workflow | Trigger | Description |
+|----------|---------|-------------|
+| `electron-pipeline.yml` | push main, PR | Pipeline complete |
+| `electron-build.yml` | workflow_call | Build ZIP Universal macOS |
+| `test-components.yml` | workflow_call | Tests unitaires Jest |
+| `test-e2e-macos.yml` | workflow_call | Tests E2E Playwright (main uniquement) |
+| `release-github.yml` | workflow_call | Creation release GitHub stable |
 
 ### Flow de versioning
 
-1. **GitVersion** calcule la version sémantique
+1. **GitVersion** calcule la version semantique
 2. **Unit Tests** via Jest
-3. **Build** DMG Universal (ARM64 + x64) sur runner self-hosted
-4. **E2E Tests** sur macOS
-5. **bump-version** commit la version dans `package.json`
-6. **Pre-release** GitHub créée (le tag pointe sur le commit versionné)
-
-### Actions utilisées
-
-| Action | Description |
-|--------|-------------|
-| `w7k-io/w7k-io-gh/gitversion` | Calcul version sémantique |
-| `w7k-io/w7k-io-gh/setup-node-npm` | Setup Node.js + NPM_GITHUB_TOKEN |
-| `w7k-io/w7k-io-gh/bump-version` | Update package.json + commit |
+3. **Build** ZIP Universal (ARM64 + x64) sur `macos-latest`
+4. **E2E Tests** sur macOS (skip sur PR)
+5. **Release** GitHub stable avec ZIP en asset
+6. **bump-version** commit la version dans `package.json`
 
 ### Secrets requis
 
 | Secret | Description |
 |--------|-------------|
-| `NPM_GITHUB_TOKEN` | PAT avec accès packages et push |
 | `APPLE_ID` | Apple ID pour notarization |
 | `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password Apple |
 | `APPLE_TEAM_ID` | Team ID Apple Developer |
 | `CSC_LINK` | Certificat de signature (base64) |
 | `CSC_KEY_PASSWORD` | Mot de passe du certificat |
 
-### Workflows
+## Tests
 
-| Workflow | Trigger | Description |
-|----------|---------|-------------|
-| `electron-pipeline.yml` | push main, PR | Pipeline complète |
-| `electron-build.yml` | workflow_call | Build DMG |
-| `release-github.yml` | workflow_call | Création release |
-| `promote-release.yml` | manual | Promouvoir en production |
+```bash
+# Tests unitaires Jest
+npx jest
 
-## 📦 Release
+# Tests E2E Playwright (necessite build prealable)
+npm run test:e2e
 
-Les releases sont automatiques via GitHub Actions :
-- Build ARM64 + x64 sur runner self-hosted
-- Tests sur GitHub runners (macos-13)
-- Distribution via GitHub Releases avec auto-update
+# Coverage
+npx jest --coverage
+```
 
-### Promouvoir une release
+## Auto-update
 
-1. Tester la pre-release beta
-2. Actions > Promote Release to Production
-3. Entrer le tag beta à promouvoir
-4. Une release stable est créée
+- **Mecanisme** : Squirrel.Mac (built-in Electron autoUpdater)
+- **Feed** : `https://update.electronjs.org/w7k-io/juni-electron-app/darwin-{arch}/{version}`
+- **Frequence** : Check toutes les 4h + 10s apres demarrage
+- **Distribution** : GitHub Releases stables (ZIP en asset)
+- **Prerequis** : Repo public (update.electronjs.org ne supporte pas les repos prives)
 
-## 📝 License
+## License
 
 UNLICENSED - Private project

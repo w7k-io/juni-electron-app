@@ -28,15 +28,15 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: npm ci
 
       - name: Build TypeScript
-        run: yarn build:ts
+        run: npm run build:ts
 
       - name: Run Jest Tests
         run: |
           echo "Tests unitaires Jest..."
-          yarn test --passWithNoTests --ci --coverage --watchAll=false
+          npx jest --passWithNoTests --ci --coverage --watchAll=false
         env:
           CI: true
 

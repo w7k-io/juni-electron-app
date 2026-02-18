@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn install --immutable
+          npm ci
           npx playwright install --with-deps
 
       - name: Download ZIP

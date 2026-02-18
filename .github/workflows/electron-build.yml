@@ -79,7 +79,7 @@ jobs:
         run: npm version ${{ inputs.version || needs.version.outputs.version }} --no-git-tag-version --allow-same-version
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: npm ci
 
       - name: Import Code Signing Certificate
         env:
@@ -101,7 +101,7 @@ jobs:
           echo "KEYCHAIN_PASSWORD=$KEYCHAIN_PASSWORD" >> $GITHUB_ENV
 
       - name: Build with Electron Forge (make)
-        run: yarn make
+        run: npm run make
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}

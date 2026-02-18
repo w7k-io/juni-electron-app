@@ -12,10 +12,7 @@ on:
 jobs:
   test:
     name: Playwright E2E
-    runs-on:
-      - self-hosted
-      - macOS
-      - ARM64
+    runs-on: macos-latest
 
     steps:
       - name: Checkout (for test scripts)

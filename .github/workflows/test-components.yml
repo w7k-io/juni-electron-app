@@ -2,10 +2,7 @@ name: Test Components (Reusable)
 
 on:
   workflow_call:
-    secrets:
-      NPM_TOKEN:
-        description: 'GitHub Packages NPM token'
-        required: true
+    secrets: {}
     outputs:
       tests_passed:
         description: "Indique si tous les tests sont passés"
@@ -23,9 +20,9 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: w7k-io/w7k-io-gh/setup-node-npm@main
+        uses: actions/setup-node@v4
         with:
-          npm-token: ${{ secrets.NPM_TOKEN }}
+          node-version: 22
 
       - name: Install dependencies
         run: npm ci

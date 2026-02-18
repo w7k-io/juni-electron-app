@@ -31,7 +31,6 @@ jobs:
     with:
       version: ${{ github.event.inputs.version || '' }}
     secrets:
-      NPM_GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
       APPLE_ID: ${{ secrets.APPLE_ID }}
       APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
@@ -47,8 +46,7 @@ jobs:
     uses: ./.github/workflows/test-e2e-macos.yml
     with:
       artifact_name: juni-electron-macos
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+    secrets: {}
 
   # ========================================
   # ÉTAPE 3: Pre-release GitHub (AUTOMATIQUE)
@@ -61,8 +59,7 @@ jobs:
     with:
       version: ${{ needs.build.outputs.version }}-beta.${{ github.run_number }}
       artifact_name: juni-electron-macos
-    secrets:
-      NPM_GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+    secrets: inherit
 
   # ========================================
   # ÉTAPE 4: Résumé final

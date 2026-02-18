@@ -14,8 +14,6 @@ on:
         required: false
         type: string
     secrets:
-      NPM_GITHUB_TOKEN:
-        required: true
       APPLE_ID:
         required: true
       APPLE_APP_SPECIFIC_PASSWORD:
@@ -53,8 +51,7 @@ jobs:
   test:
     name: Unit Tests
     uses: ./.github/workflows/test-components.yml
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+    secrets: {}
 
   build:
     name: Build macOS Universal
@@ -71,9 +68,9 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: w7k-io/w7k-io-gh/setup-node-npm@main
+        uses: actions/setup-node@v4
         with:
-          npm-token: ${{ secrets.NPM_GITHUB_TOKEN }}
+          node-version: 22
 
       - name: Update version locally
         run: npm version ${{ inputs.version || needs.version.outputs.version }} --no-git-tag-version --allow-same-version

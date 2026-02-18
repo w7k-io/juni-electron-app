@@ -15,11 +15,11 @@
   },
   "scripts": {
     "build:ts": "tsc",
-    "start": "yarn build:ts && electron-forge start",
-    "start:local": "yarn build:ts && JUNI_DEVTOOLS=true JUNI_FRONTEND_URL=http://localhost:3000 JUNI_BACKEND_URL=http://localhost:8080 electron-forge start",
-    "package": "yarn build:ts && electron-forge package",
-    "make": "yarn build:ts && electron-forge make",
-    "publish": "yarn build:ts && electron-forge publish",
+    "start": "npm run build:ts && electron-forge start",
+    "start:local": "npm run build:ts && JUNI_DEVTOOLS=true JUNI_FRONTEND_URL=http://localhost:3000 JUNI_BACKEND_URL=http://localhost:8080 electron-forge start",
+    "package": "npm run build:ts && electron-forge package",
+    "make": "npm run build:ts && electron-forge make",
+    "publish": "npm run build:ts && electron-forge publish",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -44,5 +44,5 @@
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
   },
-  "packageManager": "yarn@4.9.4+sha512.7b1cb0b62abba6a537b3a2ce00811a843bea02bcf53138581a6ae5b1bf563f734872bd47de49ce32a9ca9dcaff995aa789577ffb16811da7c603dcf69e73750b"
+  "packageManager": "npm@10.9.2"
 }

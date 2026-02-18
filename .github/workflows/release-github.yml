@@ -4,18 +4,13 @@ on:
   workflow_call:
     inputs:
       version:
-        description: "Version de la release (avec -beta.X pour pre-release)"
+        description: "Version de la release"
         required: true
         type: string
       artifact_name:
         description: "Nom de l'artifact ZIP"
         required: true
         type: string
-      prerelease:
-        description: "Marquer comme pre-release (true par défaut)"
-        required: false
-        type: boolean
-        default: true
     secrets: {}
 
 jobs:
@@ -38,13 +33,14 @@ jobs:
           name: ${{ inputs.artifact_name }}
           path: ./release-zip
 
-      - name: List release files
+      - name: Flatten ZIP files
         run: |
-          echo "Fichiers ZIP:"
-          ls -la ./release-zip/ || echo "Aucun ZIP"
+          mkdir -p ./release-flat
+          find ./release-zip -name "*.zip" -exec cp {} ./release-flat/ \;
+          echo "Release files:"
+          ls -lh ./release-flat/
 
       - name: Generate release notes
-        id: notes
         run: |
           echo "# Juni Electron v${{ inputs.version }}" > release-notes.md
           echo "" >> release-notes.md
@@ -63,7 +59,6 @@ jobs:
           echo "## Changements" >> release-notes.md
           echo "" >> release-notes.md
 
-          # Récupérer les commits depuis la dernière release
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -n "$LAST_TAG" ]; then
             echo "### Commits depuis $LAST_TAG" >> release-notes.md
@@ -91,8 +86,8 @@ jobs:
           name: Juni Electron v${{ inputs.version }}
           body_path: release-notes.md
           draft: false
-          prerelease: ${{ inputs.prerelease }}
-          files: ./release-zip/*.zip
+          prerelease: false
+          files: ./release-flat/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -103,4 +98,4 @@ jobs:
           echo "  URL: https://github.com/${{ github.repository }}/releases/tag/v${{ inputs.version }}"
           echo ""
           echo "Fichiers publiés:"
-          echo "  - ZIP universel pour installation + auto-update"
+          ls -1 ./release-flat/*.zip

@@ -20,8 +20,8 @@ DMG_FILE="dist/Juni-*.dmg"
 hdiutil attach "$DMG_FILE" -nobrowse -mountpoint /Volumes/Juni
 rm -rf app-under-test
 mkdir -p app-under-test
-cp -R "/Volumes/Juni/Juni.app" "app-under-test/"
-xattr -dr com.apple.quarantine "app-under-test/Juni.app"
+cp -R "/Volumes/Juni/Kagron.app" "app-under-test/"
+xattr -dr com.apple.quarantine "app-under-test/Kagron.app"
 hdiutil detach /Volumes/Juni
 ```
 

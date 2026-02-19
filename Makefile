@@ -54,14 +54,14 @@ prepare-test:
 	mkdir -p $(APP_TEST_DIR); \
 	unzip -q "$$ZIP_PATH" -d $(APP_TEST_DIR); \
 	echo "Suppression de la quarantaine..."; \
-	xattr -dr com.apple.quarantine "$(APP_TEST_DIR)/Juni.app" 2>/dev/null || true; \
+	xattr -dr com.apple.quarantine "$(APP_TEST_DIR)/Kagron.app" 2>/dev/null || true; \
 	echo "Vérification de la signature..."; \
-	codesign -vvv --deep --strict "$(APP_TEST_DIR)/Juni.app" 2>&1 || echo "Signature vérification terminée"; \
+	codesign -vvv --deep --strict "$(APP_TEST_DIR)/Kagron.app" 2>&1 || echo "Signature vérification terminée"; \
 	echo "App prête dans $(APP_TEST_DIR)/"
 
 run-test:
 	@echo "Lancement des tests Playwright..."
-	@if [ ! -d "$(APP_TEST_DIR)/Juni.app" ]; then \
+	@if [ ! -d "$(APP_TEST_DIR)/Kagron.app" ]; then \
 		echo "App non trouvée. Lancez 'make prepare-test' d'abord."; \
 		exit 1; \
 	fi

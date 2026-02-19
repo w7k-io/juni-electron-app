@@ -12,7 +12,7 @@ const APP_PATH = process.argv[2];
 const ARCHITECTURE = process.argv[3] || 'unknown';
 
 if (!APP_PATH) {
-  console.error('❌ Usage: node playwright-e2e.js <path-to-Juni.app> [architecture]');
+  console.error('❌ Usage: node playwright-e2e.js <path-to-Kagron.app> [architecture]');
   process.exit(1);
 }
 

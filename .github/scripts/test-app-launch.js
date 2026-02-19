@@ -14,7 +14,7 @@ const ARCHITECTURE = process.argv[3] || 'unknown';
 const TEST_TIMEOUT = 30000; // 30 secondes
 
 if (!APP_PATH) {
-  console.error('❌ Usage: node test-app-launch.js <path-to-Juni.app> [architecture]');
+  console.error('❌ Usage: node test-app-launch.js <path-to-Kagron.app> [architecture]');
   process.exit(1);
 }
 

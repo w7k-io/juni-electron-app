@@ -16,7 +16,7 @@ const ARCHITECTURE = process.argv[3] || 'unknown';
 const OUTPUT_PATH = process.argv[4] || `./juni-screenshot-${ARCHITECTURE}.png`;
 
 if (!APP_PATH) {
-  console.error('❌ Usage: node capture-screenshot.js <path-to-Juni.app> [architecture] [output-path]');
+  console.error('❌ Usage: node capture-screenshot.js <path-to-Kagron.app> [architecture] [output-path]');
   process.exit(1);
 }
 

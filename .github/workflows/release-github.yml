@@ -47,7 +47,7 @@ jobs:
           echo "## Installation" >> release-notes.md
           echo "" >> release-notes.md
           echo "### macOS" >> release-notes.md
-          echo "Téléchargez le fichier ZIP ci-dessous, décompressez-le et glissez Juni.app dans Applications." >> release-notes.md
+          echo "Téléchargez le fichier ZIP ci-dessous, décompressez-le et glissez Kagron.app dans Applications." >> release-notes.md
           echo "Ce build universel fonctionne sur:" >> release-notes.md
           echo "- **Apple Silicon** (M1/M2/M3/M4)" >> release-notes.md
           echo "- **Intel**" >> release-notes.md

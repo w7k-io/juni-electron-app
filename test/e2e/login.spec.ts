@@ -8,8 +8,8 @@ test.describe('Juni App - Login Screen', () => {
 
   test.beforeAll(async () => {
     // Chemin vers l'app extraite du DMG
-    const appBundle = path.resolve(process.cwd(), 'app-under-test', 'Juni.app');
-    const execPath = path.join(appBundle, 'Contents', 'MacOS', 'Juni');
+    const appBundle = path.resolve(process.cwd(), 'app-under-test', 'Kagron.app');
+    const execPath = path.join(appBundle, 'Contents', 'MacOS', 'Kagron');
 
     console.log(`🚀 Lancement de l'application: ${execPath}`);
 

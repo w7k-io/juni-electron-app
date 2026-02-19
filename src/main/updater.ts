@@ -1,13 +1,9 @@
-import { autoUpdater } from 'electron';
-import { app } from 'electron';
+import { autoUpdater, dialog, app } from 'electron';
 
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours
 const FEED_URL = `https://update.electronjs.org/w7k-io/juni-electron-app/${process.platform}-${process.arch}/${app.getVersion()}`;
 
 export function setupAutoUpdater(): void {
-  // Squirrel events on macOS are handled by electron-squirrel-startup (if needed)
-  // For now, use Electron's built-in autoUpdater
-
   if (!app.isPackaged) {
     console.log('[UPDATER] Skipping auto-update in development mode');
     return;
@@ -29,10 +25,24 @@ export function setupAutoUpdater(): void {
       console.log('[UPDATER] No updates available');
     });
 
-    autoUpdater.on('update-downloaded', (_event, releaseNotes, releaseName) => {
+    autoUpdater.on('update-downloaded', (_event, _releaseNotes, releaseName) => {
       console.log(`[UPDATER] Update downloaded: ${releaseName}`);
-      // The update will be applied on next restart
-      // Optionally notify the user via the renderer process
+
+      dialog
+        .showMessageBox({
+          type: 'info',
+          title: 'Mise à jour disponible',
+          message: `La version ${releaseName || 'nouvelle'} est prête.`,
+          detail: 'Redémarrer maintenant pour appliquer la mise à jour ?',
+          buttons: ['Redémarrer', 'Plus tard'],
+          defaultId: 0,
+          cancelId: 1,
+        })
+        .then(({ response }) => {
+          if (response === 0) {
+            autoUpdater.quitAndInstall();
+          }
+        });
     });
 
     autoUpdater.on('error', (error) => {
@@ -48,7 +58,6 @@ export function setupAutoUpdater(): void {
     setInterval(() => {
       autoUpdater.checkForUpdates();
     }, UPDATE_CHECK_INTERVAL_MS);
-
   } catch (error) {
     console.error('[UPDATER] Failed to initialize:', error);
   }

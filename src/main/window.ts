@@ -10,25 +10,28 @@ export function getMainWindow(): BrowserWindow | null {
 
 export function createWindow(): BrowserWindow {
   const startUrl = process.env.JUNI_FRONTEND_URL || 'https://juni.w7k.app';
+  const isTestMode = process.env.JUNI_TEST_MODE === 'true';
 
-  // Splash window: visible immediately, frameless
-  splashWindow = new BrowserWindow({
-    width: 500,
-    height: 700,
-    frame: false,
-    resizable: false,
-    transparent: false,
-    backgroundColor: '#0f0f23',
-    center: true,
-    show: false,
-    alwaysOnTop: true,
-    skipTaskbar: true,
-  });
+  // Splash window: skip in test mode to avoid capturing the wrong window
+  if (!isTestMode) {
+    splashWindow = new BrowserWindow({
+      width: 500,
+      height: 700,
+      frame: false,
+      resizable: false,
+      transparent: false,
+      backgroundColor: '#0f0f23',
+      center: true,
+      show: false,
+      alwaysOnTop: true,
+      skipTaskbar: true,
+    });
 
-  splashWindow.loadFile(path.join(__dirname, '..', 'splash.html'));
-  splashWindow.once('ready-to-show', () => splashWindow?.show());
+    splashWindow.loadFile(path.join(__dirname, '..', 'splash.html'));
+    splashWindow.once('ready-to-show', () => splashWindow?.show());
+  }
 
-  // Main window: hidden, loads the webapp
+  // Main window: hidden until webapp loads (or shown immediately in test mode)
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,

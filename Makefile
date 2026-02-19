@@ -28,7 +28,7 @@ help:
 	@echo "  ZIP_FILE           - Chemin exact vers le ZIP (override le pattern)"
 	@echo ""
 	@echo "Exemples:"
-	@echo "  make prepare-test ZIP_FILE=test-artifacts/Juni-darwin-universal.zip"
+	@echo "  make prepare-test ZIP_FILE=test-artifacts/Kagron-darwin-universal.zip"
 	@echo ""
 	@echo "Architecture détectée: $(ARCH_NAME)"
 
@@ -92,5 +92,5 @@ clean:
 	@rm -rf $(TEST_RESULTS_DIR)
 	@rm -f juni-login-*.png
 	@# Tuer les processus Juni éventuellement bloqués
-	@pkill -9 Juni 2>/dev/null || true
+	@pkill -9 Kagron 2>/dev/null || true
 	@echo "Nettoyage terminé"

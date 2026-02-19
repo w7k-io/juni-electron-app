@@ -1,7 +1,7 @@
 {
-  "name": "juni-electron",
+  "name": "kagron",
   "version": "2.572.92",
-  "description": "Juni Electron Desktop Application",
+  "description": "Kagron Desktop Application",
   "author": "Wistiteek",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
     "forge": "./forge.config.js"
   },
   "scripts": {
-    "build:ts": "tsc",
+    "build:ts": "tsc && cp src/splash.html dist/",
     "start": "npm run build:ts && electron-forge start",
     "start:local": "npm run build:ts && JUNI_DEVTOOLS=true JUNI_FRONTEND_URL=http://localhost:3000 JUNI_BACKEND_URL=http://localhost:8080 electron-forge start",
     "package": "npm run build:ts && electron-forge package",

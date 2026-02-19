@@ -4,8 +4,8 @@ const { PublisherGithub } = require('@electron-forge/publisher-github');
 /** @type {import('@electron-forge/shared-types').ForgeConfig} */
 module.exports = {
   packagerConfig: {
-    appBundleId: 'io.w7k.juni',
-    name: 'Juni',
+    appBundleId: 'io.w7k.kagron',
+    name: 'Kagron',
     icon: './build/icon',
     appCategoryType: 'public.app-category.sports',
     osxSign: {

@@ -23,7 +23,7 @@ app.whenReady().then(() => {
   // Start auto-updater
   setupAutoUpdater();
 
-  console.log('[ELECTRON] Juni ready');
+  console.log('[ELECTRON] Kagron ready');
 });
 
 app.on('window-all-closed', () => {
@@ -53,4 +53,4 @@ app.on('web-contents-created', (_event, contents) => {
   });
 });
 
-console.log('[ELECTRON] Main process started - Juni Handball Analysis');
+console.log('[ELECTRON] Main process started - Kagron Handball Analysis');

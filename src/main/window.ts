@@ -56,9 +56,9 @@ export function createWindow(): BrowserWindow {
         ...details.responseHeaders,
         'Content-Security-Policy': [
           "default-src 'self' 'unsafe-inline' data: http://localhost:8080 https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://unpkg.com; " +
-          "connect-src 'self' http://localhost:8080 https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000; " +
+          "connect-src 'self' http://localhost:8080 https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app; " +
           "style-src 'self' 'unsafe-inline' https://unpkg.com; " +
-          "media-src 'self' http://localhost:8080 https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 blob:; " +
+          "media-src 'self' http://localhost:8080 https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app blob:; " +
           "object-src 'none'"
         ],
       },

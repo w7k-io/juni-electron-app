@@ -44,9 +44,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   keychainGetPassword: (account: string) => ipcRenderer.invoke('keychain-get-password', account),
   keychainDeletePassword: (account: string) => ipcRenderer.invoke('keychain-delete-password', account),
   keychainFindCredentials: (account: string) => ipcRenderer.invoke('keychain-find-credentials', account),
-
-  // Email
-  openEmailClient: (email: string) => ipcRenderer.invoke('open-email-client', email),
 });
 
 console.log('Preload script loaded - Juni Electron');

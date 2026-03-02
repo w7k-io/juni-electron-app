@@ -12,7 +12,7 @@ export function setupMiscHandlers(): void {
       const body = encodeURIComponent(
         `Bonjour,\n\nJe souhaite réinitialiser mon mot de passe pour l'application Juni.\n\nMon email: ${email}\n\nMerci de m'envoyer le lien de réinitialisation.\n\nCordialement`
       );
-      await shell.openExternal(`mailto:support@juni.app?subject=${subject}&body=${body}`);
+      await shell.openExternal(`mailto:support@kagron.app?subject=${subject}&body=${body}`);
       return { success: true };
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);

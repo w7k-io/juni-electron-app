@@ -10,6 +10,6 @@ metadata:
 spec:
   type: application
   lifecycle: production
-  owner: kagron
+  owner: juni
   dependsOn:
     - component:juni-app

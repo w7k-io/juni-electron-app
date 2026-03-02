@@ -37,7 +37,7 @@ export function createWindow(): BrowserWindow {
     height: 900,
     minWidth: 1200,
     minHeight: 800,
-    title: 'Kagron',
+    title: 'Juni',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

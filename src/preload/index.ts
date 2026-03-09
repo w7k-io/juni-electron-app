@@ -46,4 +46,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
   keychainFindCredentials: (account: string) => ipcRenderer.invoke('keychain-find-credentials', account),
 });
 
-console.log('Preload script loaded - Juni Electron');
+console.log('Preload script loaded - Kagron Electron');

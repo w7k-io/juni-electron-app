@@ -9,7 +9,7 @@ export function getMainWindow(): BrowserWindow | null {
 }
 
 export function createWindow(): BrowserWindow {
-  const startUrl = process.env.JUNI_FRONTEND_URL || 'https://juni.w7k.app';
+  const startUrl = process.env.KAGRON_FRONTEND_URL || process.env.JUNI_FRONTEND_URL || 'https://kagron.app';
   const isTestMode = process.env.JUNI_TEST_MODE === 'true';
 
   // Splash window: skip in test mode to avoid capturing the wrong window
@@ -37,7 +37,7 @@ export function createWindow(): BrowserWindow {
     height: 900,
     minWidth: 1200,
     minHeight: 800,
-    title: 'Juni',
+    title: 'Kagron',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -55,10 +55,10 @@ export function createWindow(): BrowserWindow {
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          "default-src 'self' 'unsafe-inline' data: http://localhost:8080 https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://unpkg.com; " +
-          "connect-src 'self' http://localhost:8080 https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app; " +
+          "default-src 'self' 'unsafe-inline' data: http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://unpkg.com; " +
+          "connect-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app; " +
           "style-src 'self' 'unsafe-inline' https://unpkg.com; " +
-          "media-src 'self' http://localhost:8080 https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app blob:; " +
+          "media-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app blob:; " +
           "object-src 'none'"
         ],
       },

@@ -23,7 +23,7 @@ app.whenReady().then(() => {
   // Start auto-updater
   setupAutoUpdater();
 
-  console.log('[ELECTRON] Juni ready');
+  console.log('[ELECTRON] Kagron ready');
 });
 
 app.on('window-all-closed', () => {
@@ -45,6 +45,7 @@ app.on('web-contents-created', (_event, contents) => {
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:8080',
+      'https://kagron.app',
       'https://juni.w7k.app',
     ];
     if (!allowedOrigins.includes(parsedUrl.origin)) {
@@ -53,4 +54,4 @@ app.on('web-contents-created', (_event, contents) => {
   });
 });
 
-console.log('[ELECTRON] Main process started - Juni Handball Analysis');
+console.log('[ELECTRON] Main process started - Kagron Handball Analysis');

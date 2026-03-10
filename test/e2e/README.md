@@ -16,13 +16,13 @@ Tester automatiquement l'application Juni packagée dans un `.dmg` avec Playwrig
 npm run build:arm64  # ou build:x64 selon ton architecture
 
 # Monter et extraire l'app
-DMG_FILE="dist/Juni-*.dmg"
-hdiutil attach "$DMG_FILE" -nobrowse -mountpoint /Volumes/Juni
+DMG_FILE="dist/Kagron-*.dmg"
+hdiutil attach "$DMG_FILE" -nobrowse -mountpoint /Volumes/Kagron
 rm -rf app-under-test
 mkdir -p app-under-test
-cp -R "/Volumes/Juni/Juni.app" "app-under-test/"
-xattr -dr com.apple.quarantine "app-under-test/Juni.app"
-hdiutil detach /Volumes/Juni
+cp -R "/Volumes/Kagron/Kagron.app" "app-under-test/"
+xattr -dr com.apple.quarantine "app-under-test/Kagron.app"
+hdiutil detach /Volumes/Kagron
 ```
 
 ### 2. Lancer les tests

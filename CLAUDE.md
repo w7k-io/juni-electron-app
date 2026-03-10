@@ -1,6 +1,6 @@
 # juni-electron-app
 
-Application desktop macOS pour Juni (wrapper Electron). Aucune logique metier - tout est dans juni-app (webapp).
+Application desktop **macOS uniquement** pour Kagron (wrapper Electron). Windows/Linux utilisent la PWA de juni-app. Aucune logique metier - tout est dans juni-app (webapp).
 
 ## Stack
 
@@ -95,7 +95,7 @@ openExternal(url)           // Ouvre navigateur
 
 - `nodeIntegration: false`
 - `contextIsolation: true`
-- CSP configuree pour localhost, juni.w7k.app, Azure Blob
+- CSP configuree pour localhost, kagron.app, Azure Blob
 
 ## Build macOS
 

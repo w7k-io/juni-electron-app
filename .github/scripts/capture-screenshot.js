@@ -16,7 +16,7 @@ const ARCHITECTURE = process.argv[3] || 'unknown';
 const OUTPUT_PATH = process.argv[4] || `./juni-screenshot-${ARCHITECTURE}.png`;
 
 if (!APP_PATH) {
-  console.error('❌ Usage: node capture-screenshot.js <path-to-Juni.app> [architecture] [output-path]');
+  console.error('❌ Usage: node capture-screenshot.js <path-to-Kagron.app> [architecture] [output-path]');
   process.exit(1);
 }
 
@@ -24,7 +24,7 @@ console.log(`📸 Capture d'écran de Juni ${ARCHITECTURE}...`);
 console.log(`📍 Application: ${APP_PATH}`);
 console.log(`💾 Screenshot: ${OUTPUT_PATH}`);
 
-const executablePath = path.join(APP_PATH, 'Contents', 'MacOS', 'Juni');
+const executablePath = path.join(APP_PATH, 'Contents', 'MacOS', 'Kagron');
 
 // Lancer l'application avec remote debugging
 const appProcess = spawn(executablePath, [

@@ -14,7 +14,7 @@ const ARCHITECTURE = process.argv[3] || 'unknown';
 const TEST_TIMEOUT = 30000; // 30 secondes
 
 if (!APP_PATH) {
-  console.error('❌ Usage: node test-app-launch.js <path-to-Juni.app> [architecture]');
+  console.error('❌ Usage: node test-app-launch.js <path-to-Kagron.app> [architecture]');
   process.exit(1);
 }
 
@@ -27,7 +27,7 @@ console.log(`🚀 Test de lancement de Juni ${ARCHITECTURE}...`);
 console.log(`📍 Chemin: ${APP_PATH}`);
 
 // Lancer l'application avec des logs
-const executablePath = path.join(APP_PATH, 'Contents', 'MacOS', 'Juni');
+const executablePath = path.join(APP_PATH, 'Contents', 'MacOS', 'Kagron');
 const appProcess = spawn(executablePath, [
   '--no-sandbox',
   '--disable-gpu',

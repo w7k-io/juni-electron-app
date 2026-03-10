@@ -12,7 +12,7 @@ const APP_PATH = process.argv[2];
 const ARCHITECTURE = process.argv[3] || 'unknown';
 
 if (!APP_PATH) {
-  console.error('❌ Usage: node playwright-e2e.js <path-to-Juni.app> [architecture]');
+  console.error('❌ Usage: node playwright-e2e.js <path-to-Kagron.app> [architecture]');
   process.exit(1);
 }
 
@@ -25,7 +25,7 @@ async function runE2ETests() {
     // Lancer l'application Electron
     console.log('🚀 Lancement de l\'application...');
     app = await electron.launch({
-      executablePath: path.join(APP_PATH, 'Contents', 'MacOS', 'Juni'),
+      executablePath: path.join(APP_PATH, 'Contents', 'MacOS', 'Kagron'),
       args: ['--no-sandbox', '--disable-dev-shm-usage']
     });
 

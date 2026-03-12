@@ -1,4 +1,4 @@
-import { BrowserWindow, session } from 'electron';
+import { BrowserWindow, ipcMain, session } from 'electron';
 import path from 'path';
 
 let mainWindow: BrowserWindow | null = null;
@@ -69,17 +69,20 @@ export function createWindow(): BrowserWindow {
     mainWindow = null;
   });
 
-  // When webapp is fully loaded, show main window and close splash
-  // Minimum splash display time to avoid a jarring flash
+  // Show main window and close splash (called once via IPC or fallback timeout)
   const splashShownAt = Date.now();
   const MIN_SPLASH_MS = 2_000;
+  let appReady = false;
 
-  mainWindow.webContents.on('did-finish-load', () => {
+  const showMainWindow = () => {
+    if (appReady) return;
+    appReady = true;
+
     const elapsed = Date.now() - splashShownAt;
     const delay = Math.max(0, MIN_SPLASH_MS - elapsed);
 
     setTimeout(() => {
-      console.log('[ELECTRON] Webapp loaded, switching from splash to main window');
+      console.log('[ELECTRON] App ready, switching from splash to main window');
       mainWindow?.show();
 
       if (process.env.JUNI_DEVTOOLS === 'true') {
@@ -91,7 +94,21 @@ export function createWindow(): BrowserWindow {
         splashWindow = null;
       }
     }, delay);
+  };
+
+  // Wait for the frontend to signal it has resolved auth state
+  ipcMain.once('app:ready', () => {
+    console.log('[ELECTRON] Received app:ready from frontend');
+    showMainWindow();
   });
+
+  // Fallback: show window after 90s even if signal never arrives (crash protection)
+  setTimeout(() => {
+    if (!appReady) {
+      console.warn('[ELECTRON] Fallback timeout (90s) - showing main window without app:ready signal');
+      showMainWindow();
+    }
+  }, 90_000);
 
   // Load the webapp URL in the hidden main window
   console.log('[ELECTRON] Loading webapp at', startUrl);

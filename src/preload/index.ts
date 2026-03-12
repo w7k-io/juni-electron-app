@@ -39,6 +39,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   readFile: (filePath: string) => ipcRenderer.invoke('read-file', filePath),
   readDirectory: (dirPath: string) => ipcRenderer.invoke('read-directory', dirPath),
 
+  // App lifecycle
+  notifyAppReady: () => ipcRenderer.send('app:ready'),
+
   // Keychain APIs
   keychainSetPassword: (account: string, password: string) => ipcRenderer.invoke('keychain-set-password', account, password),
   keychainGetPassword: (account: string) => ipcRenderer.invoke('keychain-get-password', account),

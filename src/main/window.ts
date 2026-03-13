@@ -15,8 +15,8 @@ export function createWindow(): BrowserWindow {
   // Splash window: skip in test mode to avoid capturing the wrong window
   if (!isTestMode) {
     splashWindow = new BrowserWindow({
-      width: 500,
-      height: 700,
+      width: 380,
+      height: 480,
       frame: false,
       resizable: false,
       transparent: false,

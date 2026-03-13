@@ -1,7 +1,9 @@
 <svg width="560" height="560" viewBox="0 0 560 560" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="560" height="560" fill="url(#paint0_linear_194_47)"/>
+<g transform="translate(280, 280) scale(1.4) translate(-280, -280)">
 <path d="M284.719 262.074L408.891 430H340.514L246.969 299.986L213.11 332.927L152 390.728V336.599L244.756 231.543L244.723 231.525L333.154 130H402.956L284.719 262.074Z" fill="#B9975B"/>
 <path d="M209.694 232.571L152 297.916V130H209.694V232.571Z" fill="#B9975B"/>
+</g>
 <defs>
 <linearGradient id="paint0_linear_194_47" x1="280" y1="560" x2="280" y2="-8.68924e-06" gradientUnits="userSpaceOnUse">
 <stop stop-color="#2F6CB0"/>

@@ -47,6 +47,9 @@ jobs:
       - name: Calculate Version
         id: gitversion
         uses: w7k-io/w7k-io-gh/gitversion@main
+        with:
+          mode: 'delivery'
+          next-version: '0.9.0'
 
   test:
     name: Unit Tests

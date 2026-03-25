@@ -1,9 +1,10 @@
-import { app, BrowserWindow } from 'electron';
-import { createWindow } from './window';
+import { app, BrowserWindow, session, dialog } from 'electron';
+import { createWindow, getMainWindow } from './window';
 import { setupKeychainHandlers } from './ipc/keychain-handlers';
 import { setupFileHandlers } from './ipc/file-handlers';
 import { setupMiscHandlers } from './ipc/misc-handlers';
 import { setupAutoUpdater } from './updater';
+import path from 'path';
 
 // Handle Squirrel events (Windows install/update/uninstall)
 // On macOS with Squirrel, the app just launches normally
@@ -50,6 +51,69 @@ app.on('web-contents-created', (_event, contents) => {
     ];
     if (!allowedOrigins.includes(parsedUrl.origin)) {
       navigationEvent.preventDefault();
+    }
+  });
+
+  // Prevent new windows from opening (e.g. <a target="_blank">)
+  // Instead, trigger a download for file URLs or deny the window
+  contents.setWindowOpenHandler(({ url }) => {
+    // Allow blob: URLs to be handled as downloads
+    if (url.startsWith('blob:')) {
+      return { action: 'deny' };
+    }
+
+    // For Azure Blob Storage / video service URLs, trigger a download
+    const downloadPatterns = [
+      '.blob.core.windows.net',
+      'media.kagron.app',
+      '/api/sequences/',
+      '.mp4',
+      '.zip',
+    ];
+
+    const isDownloadUrl = downloadPatterns.some(pattern => url.includes(pattern));
+    if (isDownloadUrl) {
+      const win = getMainWindow();
+      if (win) {
+        win.webContents.downloadURL(url);
+      }
+      return { action: 'deny' };
+    }
+
+    // Deny all other new windows
+    return { action: 'deny' };
+  });
+});
+
+// Handle file downloads natively with save dialog
+session.defaultSession.on('will-download', (_event, item) => {
+  const fileName = item.getFilename() || 'download';
+  const win = getMainWindow();
+
+  // Show save dialog
+  if (win) {
+    const ext = path.extname(fileName).slice(1) || 'mp4';
+    const filters = ext === 'zip'
+      ? [{ name: 'Archive ZIP', extensions: ['zip'] }]
+      : [{ name: 'Video MP4', extensions: ['mp4'] }];
+
+    dialog.showSaveDialog(win, {
+      defaultPath: fileName,
+      filters,
+    }).then(({ canceled, filePath }) => {
+      if (canceled || !filePath) {
+        item.cancel();
+      } else {
+        item.setSavePath(filePath);
+      }
+    });
+  }
+
+  item.on('done', (_e, state) => {
+    if (state === 'completed') {
+      console.log('[DOWNLOAD] Completed:', item.getSavePath());
+    } else {
+      console.log('[DOWNLOAD] Failed:', state);
     }
   });
 });

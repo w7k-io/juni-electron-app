@@ -24,6 +24,39 @@ app.whenReady().then(() => {
   // Start auto-updater
   setupAutoUpdater();
 
+  // Handle file downloads natively with save dialog
+  session.defaultSession.on('will-download', (_event, item) => {
+    const fileName = item.getFilename() || 'download';
+    const win = getMainWindow();
+
+    // Show save dialog
+    if (win) {
+      const ext = path.extname(fileName).slice(1) || 'mp4';
+      const filters = ext === 'zip'
+        ? [{ name: 'Archive ZIP', extensions: ['zip'] }]
+        : [{ name: 'Video MP4', extensions: ['mp4'] }];
+
+      dialog.showSaveDialog(win, {
+        defaultPath: fileName,
+        filters,
+      }).then(({ canceled, filePath }) => {
+        if (canceled || !filePath) {
+          item.cancel();
+        } else {
+          item.setSavePath(filePath);
+        }
+      });
+    }
+
+    item.on('done', (_e, state) => {
+      if (state === 'completed') {
+        console.log('[DOWNLOAD] Completed:', item.getSavePath());
+      } else {
+        console.log('[DOWNLOAD] Failed:', state);
+      }
+    });
+  });
+
   console.log('[ELECTRON] Kagron ready');
 });
 
@@ -82,39 +115,6 @@ app.on('web-contents-created', (_event, contents) => {
 
     // Deny all other new windows
     return { action: 'deny' };
-  });
-});
-
-// Handle file downloads natively with save dialog
-session.defaultSession.on('will-download', (_event, item) => {
-  const fileName = item.getFilename() || 'download';
-  const win = getMainWindow();
-
-  // Show save dialog
-  if (win) {
-    const ext = path.extname(fileName).slice(1) || 'mp4';
-    const filters = ext === 'zip'
-      ? [{ name: 'Archive ZIP', extensions: ['zip'] }]
-      : [{ name: 'Video MP4', extensions: ['mp4'] }];
-
-    dialog.showSaveDialog(win, {
-      defaultPath: fileName,
-      filters,
-    }).then(({ canceled, filePath }) => {
-      if (canceled || !filePath) {
-        item.cancel();
-      } else {
-        item.setSavePath(filePath);
-      }
-    });
-  }
-
-  item.on('done', (_e, state) => {
-    if (state === 'completed') {
-      console.log('[DOWNLOAD] Completed:', item.getSavePath());
-    } else {
-      console.log('[DOWNLOAD] Failed:', state);
-    }
   });
 });
 

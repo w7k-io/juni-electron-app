@@ -40,6 +40,11 @@ jobs:
           echo "Testing ZIP: $ZIP_FILE"
           make prepare-test ZIP_FILE="$ZIP_FILE"
 
+      - name: Re-sign app for testing (remove hardened runtime)
+        run: |
+          codesign --force --deep --sign - app-under-test/Kagron.app
+          echo "App re-signed ad-hoc for E2E testing (no hardened runtime)"
+
       - name: Run Playwright Tests
         run: make run-test
         timeout-minutes: 5

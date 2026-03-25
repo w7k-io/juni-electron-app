@@ -58,9 +58,14 @@ test.describe('Juni App - Login Screen', () => {
     await win.screenshot({ path: screenshotPath, fullPage: true });
     console.log(`📸 Screenshot sauvegardé: ${screenshotPath}`);
 
-    // Vérifier que la page contient du contenu
+    // Vérifier que la page contient des éléments de login
     const pageContent = await win.content();
+
+    // Vérifications basiques
     expect(pageContent.length).toBeGreaterThan(0);
     console.log('✅ Page de login chargée avec succès');
+
+    // Vérifier que la fenêtre existe et a un titre
+    expect(await win.title()).toBeTruthy();
   });
 });

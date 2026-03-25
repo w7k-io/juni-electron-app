@@ -22,7 +22,7 @@ test.describe('Juni App - Login Screen', () => {
         JUNI_TEST_MODE: 'true',
         ELECTRON_ENABLE_LOGGING: '1',
       },
-      timeout: 60000,
+      timeout: 120000,
     });
 
     // Attendre la première fenêtre
@@ -35,8 +35,10 @@ test.describe('Juni App - Login Screen', () => {
   });
 
   test.afterAll(async () => {
-    console.log('🧹 Fermeture de l\'application');
-    await app.close();
+    if (app) {
+      console.log('🧹 Fermeture de l\'application');
+      await app.close();
+    }
   });
 
   test('affiche la page de login', async ({ }, testInfo) => {

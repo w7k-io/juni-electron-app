@@ -6,8 +6,8 @@ import { setupMiscHandlers } from './ipc/misc-handlers';
 import { setupAutoUpdater } from './updater';
 import path from 'path';
 
-// Handle Squirrel events (Windows install/update/uninstall)
-// On macOS with Squirrel, the app just launches normally
+// Store the save path chosen by the user (set before downloadURL triggers will-download)
+let pendingSavePath: string | null = null;
 
 app.whenReady().then(() => {
   createWindow();
@@ -24,31 +24,11 @@ app.whenReady().then(() => {
   // Start auto-updater
   setupAutoUpdater();
 
-  // Handle file downloads natively with save dialog
+  // Handle file downloads: apply the pre-chosen save path
   session.defaultSession.on('will-download', (_event, item) => {
-    const fileName = item.getFilename() || 'download';
-    const win = getMainWindow();
-
-    if (win) {
-      // Pause download while save dialog is shown
-      item.pause();
-
-      const ext = path.extname(fileName).slice(1) || 'mp4';
-      const filters = ext === 'zip'
-        ? [{ name: 'Archive ZIP', extensions: ['zip'] }]
-        : [{ name: 'Video MP4', extensions: ['mp4'] }];
-
-      dialog.showSaveDialog(win, {
-        defaultPath: fileName,
-        filters,
-      }).then(({ canceled, filePath }) => {
-        if (canceled || !filePath) {
-          item.cancel();
-        } else {
-          item.setSavePath(filePath);
-          item.resume();
-        }
-      });
+    if (pendingSavePath) {
+      item.setSavePath(pendingSavePath);
+      pendingSavePath = null;
     }
 
     item.on('done', (_e, state) => {
@@ -111,7 +91,24 @@ app.on('web-contents-created', (_event, contents) => {
     if (isDownloadUrl) {
       const win = getMainWindow();
       if (win) {
-        win.webContents.downloadURL(url);
+        // Extract filename from URL
+        const urlPath = new URL(url).pathname;
+        const fileName = path.basename(urlPath) || 'download.mp4';
+        const ext = path.extname(fileName).slice(1) || 'mp4';
+        const filters = ext === 'zip'
+          ? [{ name: 'Archive ZIP', extensions: ['zip'] }]
+          : [{ name: 'Video MP4', extensions: ['mp4'] }];
+
+        // Show save dialog BEFORE starting the download
+        dialog.showSaveDialog(win, {
+          defaultPath: fileName,
+          filters,
+        }).then(({ canceled, filePath }) => {
+          if (!canceled && filePath) {
+            pendingSavePath = filePath;
+            win.webContents.downloadURL(url);
+          }
+        });
       }
       return { action: 'deny' };
     }

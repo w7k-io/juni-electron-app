@@ -102,6 +102,11 @@ export function createWindow(): BrowserWindow {
     showMainWindow();
   });
 
+  // Test mode: show immediately (no webapp to send app:ready)
+  if (isTestMode) {
+    showMainWindow();
+  }
+
   // Fallback: show window after 90s even if signal never arrives (crash protection)
   setTimeout(() => {
     if (!appReady) {

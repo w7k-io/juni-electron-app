@@ -29,8 +29,10 @@ app.whenReady().then(() => {
     const fileName = item.getFilename() || 'download';
     const win = getMainWindow();
 
-    // Show save dialog
     if (win) {
+      // Pause download while save dialog is shown
+      item.pause();
+
       const ext = path.extname(fileName).slice(1) || 'mp4';
       const filters = ext === 'zip'
         ? [{ name: 'Archive ZIP', extensions: ['zip'] }]
@@ -44,6 +46,7 @@ app.whenReady().then(() => {
           item.cancel();
         } else {
           item.setSavePath(filePath);
+          item.resume();
         }
       });
     }

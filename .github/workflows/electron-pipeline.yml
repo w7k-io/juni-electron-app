@@ -36,6 +36,7 @@ jobs:
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       CSC_LINK: ${{ secrets.CSC_LINK }}
       CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # ========================================
   # ÉTAPE 2: Tests E2E macOS (main uniquement)

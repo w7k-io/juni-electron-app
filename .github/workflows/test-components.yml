@@ -2,7 +2,9 @@ name: Test Components (Reusable)
 
 on:
   workflow_call:
-    secrets: {}
+    secrets:
+      SONAR_TOKEN:
+        required: false
     outputs:
       tests_passed:
         description: "Indique si tous les tests sont passés"
@@ -17,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -44,6 +46,13 @@ jobs:
           name: coverage-report-${{ github.sha }}
           path: coverage/
           retention-days: 7
+
+      - name: SonarCloud Scan
+        if: ${{ secrets.SONAR_TOKEN != '' }}
+        uses: SonarSource/sonarcloud-github-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test-summary:
     name: Tests Summary

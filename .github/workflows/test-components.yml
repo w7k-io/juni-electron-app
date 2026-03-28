@@ -2,9 +2,7 @@ name: Test Components (Reusable)
 
 on:
   workflow_call:
-    secrets:
-      SONAR_TOKEN:
-        required: false
+    secrets: {}
     outputs:
       tests_passed:
         description: "Indique si tous les tests sont passés"
@@ -47,11 +45,11 @@ jobs:
           path: coverage/
           retention-days: 7
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload coverage to Codacy
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          api-token: ${{ secrets.CODACY_API_TOKEN }}
+          coverage-reports: coverage/lcov.info
 
   test-summary:
     name: Tests Summary

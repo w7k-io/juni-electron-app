@@ -24,8 +24,6 @@ on:
         required: true
       CSC_KEY_PASSWORD:
         required: true
-      SONAR_TOKEN:
-        required: false
     outputs:
       version:
         description: "Version calculee"
@@ -56,8 +54,7 @@ jobs:
   test:
     name: Unit Tests
     uses: ./.github/workflows/test-components.yml
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    secrets: {}
 
   build:
     name: Build macOS Universal

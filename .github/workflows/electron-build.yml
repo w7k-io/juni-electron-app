@@ -24,6 +24,8 @@ on:
         required: true
       CSC_KEY_PASSWORD:
         required: true
+      CODACY_API_TOKEN:
+        required: false
     outputs:
       version:
         description: "Version calculee"

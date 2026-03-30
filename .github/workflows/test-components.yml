@@ -2,7 +2,6 @@ name: Test Components (Reusable)
 
 on:
   workflow_call:
-    secrets: {}
     outputs:
       tests_passed:
         description: "Indique si tous les tests sont passés"

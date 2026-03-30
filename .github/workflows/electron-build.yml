@@ -54,7 +54,7 @@ jobs:
   test:
     name: Unit Tests
     uses: ./.github/workflows/test-components.yml
-    secrets: {}
+    secrets: inherit
 
   build:
     name: Build macOS Universal

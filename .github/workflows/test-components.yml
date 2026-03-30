@@ -45,9 +45,10 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage to Codacy
+        if: always() && github.event_name != 'pull_request'
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
-          api-token: ${{ secrets.CODACY_API_TOKEN }}
+          project-token: ${{ secrets.CODACY_API_TOKEN }}
           coverage-reports: coverage/lcov.info
 
   test-summary:

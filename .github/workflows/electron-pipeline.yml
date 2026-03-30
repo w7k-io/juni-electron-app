@@ -30,12 +30,7 @@ jobs:
     uses: ./.github/workflows/electron-build.yml
     with:
       version: ${{ github.event.inputs.version || '' }}
-    secrets:
-      APPLE_ID: ${{ secrets.APPLE_ID }}
-      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      CSC_LINK: ${{ secrets.CSC_LINK }}
-      CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+    secrets: inherit
 
   # ========================================
   # ÉTAPE 2: Tests E2E macOS (main uniquement)
@@ -47,7 +42,7 @@ jobs:
     uses: ./.github/workflows/test-e2e-macos.yml
     with:
       artifact_name: juni-electron-macos
-    secrets: {}
+    secrets: inherit
 
   # ========================================
   # ÉTAPE 3: Release GitHub (main uniquement)

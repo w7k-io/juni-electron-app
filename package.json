@@ -37,6 +37,7 @@
     "@electron/osx-sign": "^2.3.0",
     "@playwright/test": "^1.56.0",
     "@tsconfig/node22": "^22.0.5",
+    "@types/jest": "^30.0.0",
     "@types/node": "^25.2.3",
     "electron": "^37.2.3",
     "glob": "^11.0.3",

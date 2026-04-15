@@ -47,6 +47,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   keychainGetPassword: (account: string) => ipcRenderer.invoke('keychain-get-password', account),
   keychainDeletePassword: (account: string) => ipcRenderer.invoke('keychain-delete-password', account),
   keychainFindCredentials: (account: string) => ipcRenderer.invoke('keychain-find-credentials', account),
+
+  // Touch ID APIs (JUNI-720, macOS only)
+  touchIdAvailable: (): Promise<boolean> => ipcRenderer.invoke('touchid:available'),
+  promptTouchId: (reason: string): Promise<boolean> => ipcRenderer.invoke('touchid:prompt', reason),
 });
 
 console.log('Preload script loaded - Kagron Electron');

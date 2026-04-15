@@ -1,6 +1,7 @@
 import { app, BrowserWindow, session, dialog } from 'electron';
 import { createWindow, getMainWindow } from './window';
 import { setupKeychainHandlers } from './ipc/keychain-handlers';
+import { setupTouchIdHandlers } from './ipc/touchid-handlers';
 import { setupFileHandlers } from './ipc/file-handlers';
 import { setupMiscHandlers } from './ipc/misc-handlers';
 import { setupAutoUpdater } from './updater';
@@ -18,6 +19,7 @@ app.whenReady().then(() => {
 
   // Register IPC handlers
   setupKeychainHandlers();
+  setupTouchIdHandlers();
   setupFileHandlers();
   setupMiscHandlers();
 

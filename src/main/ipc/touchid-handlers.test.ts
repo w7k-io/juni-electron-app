@@ -58,7 +58,9 @@ describe('Touch ID handlers (JUNI-720)', () => {
         Object.defineProperty(process, 'platform', { value: original, configurable: true });
     });
 
-    it('returns true on a successful prompt', async () => {
+    it('returns true on a successful prompt (darwin)', async () => {
+        const original = process.platform;
+        Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
         promptTouchID.mockResolvedValue(undefined);
         setupTouchIdHandlers();
 
@@ -66,14 +68,30 @@ describe('Touch ID handlers (JUNI-720)', () => {
 
         expect(ok).toBe(true);
         expect(promptTouchID).toHaveBeenCalledWith('unlock Kagron');
+        Object.defineProperty(process, 'platform', { value: original, configurable: true });
     });
 
-    it('returns false when the user cancels or fails Touch ID', async () => {
+    it('returns false when the user cancels or fails Touch ID (darwin)', async () => {
+        const original = process.platform;
+        Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
         promptTouchID.mockRejectedValue(new Error('cancelled'));
         setupTouchIdHandlers();
 
         const ok = await handlers['touchid:prompt']({} as never, 'unlock Kagron');
 
         expect(ok).toBe(false);
+        Object.defineProperty(process, 'platform', { value: original, configurable: true });
+    });
+
+    it('returns false on non-darwin without prompting', async () => {
+        const original = process.platform;
+        Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
+        setupTouchIdHandlers();
+
+        const ok = await handlers['touchid:prompt']({} as never, 'unlock Kagron');
+
+        expect(ok).toBe(false);
+        expect(promptTouchID).not.toHaveBeenCalled();
+        Object.defineProperty(process, 'platform', { value: original, configurable: true });
     });
 });

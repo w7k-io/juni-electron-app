@@ -1,0 +1,24 @@
+---
+engines:
+  eslint:
+    enabled: true
+  duplication:
+    enabled: true
+  metrics:
+    enabled: true
+  coverage:
+    enabled: true
+
+exclude_paths:
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/coverage/**"
+  - "**/test-results/**"
+  - "**/playwright-report/**"
+  - "**/*.min.js"
+  - "**/*.test.{js,jsx,ts,tsx}"
+  - "**/*.spec.{js,jsx,ts,tsx}"
+  - "test/**"
+  - "docs/**"
+  - "forge.config.js"

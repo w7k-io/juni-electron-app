@@ -140,6 +140,9 @@ export class HlsCacheManager {
     try {
       const u = new URL(url);
       if (u.protocol !== 'https:') return false;
+      // Reject non-standard ports — Azure Blob and kagron.app live on 443.
+      // Empty u.port means default 443.
+      if (u.port !== '') return false;
       return ALLOWED_DOMAINS.some((re) => re.test(u.hostname));
     } catch {
       return false;

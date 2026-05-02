@@ -13,6 +13,22 @@ interface IndexFileFormat {
 
 const HASH_REGEX = /^[a-f0-9]{64}$/;
 
+function isValidEntry(entry: unknown): entry is IndexEntry {
+  if (typeof entry !== 'object' || entry === null) return false;
+  const e = entry as Partial<IndexEntry>;
+  return (
+    typeof e.hash === 'string' &&
+    HASH_REGEX.test(e.hash) &&
+    typeof e.originalUrl === 'string' &&
+    typeof e.contentType === 'string' &&
+    typeof e.sizeBytes === 'number' &&
+    Number.isFinite(e.sizeBytes) &&
+    e.sizeBytes >= 0 &&
+    typeof e.lastAccessAt === 'number' &&
+    Number.isFinite(e.lastAccessAt)
+  );
+}
+
 export class HlsCacheIndex {
   private byUrl = new Map<string, IndexEntry>();
   private byHash = new Map<string, IndexEntry>();
@@ -102,6 +118,7 @@ export class HlsCacheIndex {
       const parsed = JSON.parse(raw) as IndexFileFormat;
       if (parsed.version !== 1 || !Array.isArray(parsed.entries)) return;
       for (const entry of parsed.entries) {
+        if (!isValidEntry(entry)) continue;
         this.byUrl.set(entry.originalUrl, entry);
         this.byHash.set(entry.hash, entry);
       }

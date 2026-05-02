@@ -172,4 +172,48 @@ describe('HlsCacheIndex', () => {
     idx.remove(entry.hash);
     expect(idx.lookup(entry.originalUrl)).toBeNull();
   });
+
+  it('load filters out malformed entries (Olivier review)', async () => {
+    const malformed = {
+      version: 1,
+      entries: [
+        {
+          // valid
+          hash: 'a'.repeat(64),
+          originalUrl: 'u1',
+          contentType: 'video/iso.segment',
+          sizeBytes: 100,
+          lastAccessAt: 1000,
+        },
+        {
+          // missing sizeBytes
+          hash: 'b'.repeat(64),
+          originalUrl: 'u2',
+          contentType: 'video/iso.segment',
+          lastAccessAt: 2000,
+        },
+        {
+          // hash not 64 hex
+          hash: 'short',
+          originalUrl: 'u3',
+          contentType: 'video/iso.segment',
+          sizeBytes: 100,
+          lastAccessAt: 3000,
+        },
+        {
+          // sizeBytes not finite
+          hash: 'c'.repeat(64),
+          originalUrl: 'u4',
+          contentType: 'video/iso.segment',
+          sizeBytes: NaN,
+          lastAccessAt: 4000,
+        },
+      ],
+    };
+    await fs.writeFile(indexPath, JSON.stringify(malformed), 'utf8');
+    const idx = new HlsCacheIndex(indexPath);
+    await idx.load();
+    expect(idx.entriesCount()).toBe(1);
+    expect(idx.totalSize()).toBe(100);
+  });
 });

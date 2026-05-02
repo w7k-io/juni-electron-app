@@ -1,6 +1,20 @@
 import { ipcMain, app } from 'electron';
 import path from 'path';
 import { HlsCacheManager } from '../cache/HlsCacheManager';
+import { CAP_PRESETS_BYTES } from '../cache/types';
+
+const MAX_CONTENT_TYPE_LENGTH = 128;
+
+function isValidConfig(cfg: unknown): cfg is { capBytes?: number; enabled?: boolean } {
+  if (typeof cfg !== 'object' || cfg === null) return false;
+  const c = cfg as { capBytes?: unknown; enabled?: unknown };
+  if (c.capBytes !== undefined) {
+    if (typeof c.capBytes !== 'number' || !Number.isFinite(c.capBytes)) return false;
+    if (!CAP_PRESETS_BYTES.includes(c.capBytes as (typeof CAP_PRESETS_BYTES)[number])) return false;
+  }
+  if (c.enabled !== undefined && typeof c.enabled !== 'boolean') return false;
+  return true;
+}
 
 let manager: HlsCacheManager | null = null;
 
@@ -27,9 +41,17 @@ export async function setupCacheHandlers(): Promise<HlsCacheManager> {
       if (
         typeof canonicalUrl !== 'string' ||
         typeof contentType !== 'string' ||
+        contentType.length > MAX_CONTENT_TYPE_LENGTH ||
         !(bytes instanceof ArrayBuffer)
       ) {
         throw new Error('invalid put arguments');
+      }
+      // Defence in depth: a properly canonicalized URL has no query
+      // string and no fragment. If the renderer forgets to canonicalize
+      // (e.g. forwarding a URL with a SAS token), fail loud — better than
+      // silently leaking the SAS into the index/logs.
+      if (canonicalUrl.includes('?') || canonicalUrl.includes('#')) {
+        throw new Error('canonicalUrl must not contain query string or fragment');
       }
       await manager!.put(canonicalUrl, contentType, bytes);
     }
@@ -40,7 +62,7 @@ export async function setupCacheHandlers(): Promise<HlsCacheManager> {
   ipcMain.handle(
     'cache:set-config',
     async (_event, cfg: { capBytes?: number; enabled?: boolean }) => {
-      if (typeof cfg !== 'object' || cfg === null) {
+      if (!isValidConfig(cfg)) {
         throw new Error('invalid config');
       }
       await manager!.setConfig(cfg);

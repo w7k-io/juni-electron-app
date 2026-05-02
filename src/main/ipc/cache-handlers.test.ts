@@ -106,6 +106,53 @@ describe('cache-handlers IPC', () => {
     await expect(invoke('cache:set-config', 'not-an-object')).rejects.toThrow();
   });
 
+  it('cache:set-config rejects out-of-preset capBytes', async () => {
+    await expect(invoke('cache:set-config', { capBytes: 1234 })).rejects.toThrow(
+      /invalid config/
+    );
+    await expect(invoke('cache:set-config', { capBytes: -1 })).rejects.toThrow();
+    await expect(invoke('cache:set-config', { capBytes: '20' })).rejects.toThrow();
+  });
+
+  it('cache:set-config accepts preset capBytes values', async () => {
+    await expect(
+      invoke('cache:set-config', { capBytes: 50 * 1024 * 1024 * 1024 })
+    ).resolves.toBeUndefined();
+  });
+
+  it('cache:set-config rejects non-boolean enabled', async () => {
+    await expect(invoke('cache:set-config', { enabled: 'yes' })).rejects.toThrow();
+    await expect(invoke('cache:set-config', { enabled: 1 })).rejects.toThrow();
+  });
+
+  it('cache:put rejects URLs with query string or fragment (defence in depth)', async () => {
+    const bytes = new Uint8Array([1]).buffer;
+    await expect(
+      invoke(
+        'cache:put',
+        'https://x.blob.core.windows.net/seg.m4s?sas=secret',
+        'video/iso.segment',
+        bytes
+      )
+    ).rejects.toThrow(/canonicalUrl must not contain query string or fragment/);
+    await expect(
+      invoke(
+        'cache:put',
+        'https://x.blob.core.windows.net/seg.m4s#t=10',
+        'video/iso.segment',
+        bytes
+      )
+    ).rejects.toThrow(/canonicalUrl must not contain query string or fragment/);
+  });
+
+  it('cache:put rejects oversized contentType', async () => {
+    const bytes = new Uint8Array([1]).buffer;
+    const huge = 'a'.repeat(200);
+    await expect(
+      invoke('cache:put', 'https://x.blob.core.windows.net/seg.m4s', huge, bytes)
+    ).rejects.toThrow(/invalid put arguments/);
+  });
+
   it('cache:set-config disables cache and prevents subsequent puts', async () => {
     await invoke('cache:set-config', { enabled: false });
     const bytes = new Uint8Array([1]).buffer;

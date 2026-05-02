@@ -129,4 +129,15 @@ describe('HlsCacheManager', () => {
       )
     ).rejects.toThrow(/domain not allowed/i);
   });
+
+  it('rejects URLs with non-default ports (Olivier review)', async () => {
+    const bytes = new Uint8Array([1]).buffer;
+    await expect(
+      manager.put(
+        'https://evil.kagron.app:8888/seg.m4s',
+        'video/iso.segment',
+        bytes
+      )
+    ).rejects.toThrow(/domain not allowed/i);
+  });
 });

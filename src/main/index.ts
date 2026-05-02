@@ -4,13 +4,14 @@ import { setupKeychainHandlers } from './ipc/keychain-handlers';
 import { setupTouchIdHandlers } from './ipc/touchid-handlers';
 import { setupFileHandlers } from './ipc/file-handlers';
 import { setupMiscHandlers } from './ipc/misc-handlers';
+import { setupCacheHandlers } from './ipc/cache-handlers';
 import { setupAutoUpdater } from './updater';
 import path from 'path';
 
 // Store the save path chosen by the user (set before downloadURL triggers will-download)
 let pendingSavePath: string | null = null;
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   createWindow();
 
   if (app.isPackaged && !process.env.NODE_ENV) {
@@ -22,6 +23,7 @@ app.whenReady().then(() => {
   setupTouchIdHandlers();
   setupFileHandlers();
   setupMiscHandlers();
+  await setupCacheHandlers();
 
   // Start auto-updater
   setupAutoUpdater();

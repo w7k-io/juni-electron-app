@@ -84,6 +84,19 @@ showItemInFolder(path)
 getTempDirectory()
 ```
 
+**Cache HLS (JUNI-706)**
+```typescript
+cache.get(canonicalUrl)            // ArrayBuffer | null
+cache.put(canonicalUrl, contentType, bytes)
+cache.getStats()                   // { totalBytes, entries, capBytes, enabled }
+cache.getConfig()                  // { capBytes, enabled }
+cache.setConfig(cfg)
+cache.purgeAll()
+cache.drainMetrics()               // CacheMetricsSnapshot
+```
+
+Stockage : `~/Library/Application Support/Kagron/cache/`. Détails : `src/main/cache/CLAUDE.md`.
+
 **Utilitaires**
 ```typescript
 openExternal(url)           // Ouvre navigateur

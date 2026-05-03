@@ -1,7 +1,25 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+const cache = {
+  get: (canonicalUrl: string): Promise<ArrayBuffer | null> =>
+    ipcRenderer.invoke('cache:get', canonicalUrl),
+  put: (
+    canonicalUrl: string,
+    contentType: string,
+    bytes: ArrayBuffer
+  ): Promise<void> =>
+    ipcRenderer.invoke('cache:put', canonicalUrl, contentType, bytes),
+  getStats: () => ipcRenderer.invoke('cache:get-stats'),
+  getConfig: () => ipcRenderer.invoke('cache:get-config'),
+  setConfig: (cfg: { capBytes?: number; enabled?: boolean }): Promise<void> =>
+    ipcRenderer.invoke('cache:set-config', cfg),
+  purgeAll: (): Promise<void> => ipcRenderer.invoke('cache:purge'),
+  drainMetrics: () => ipcRenderer.invoke('cache:drain-metrics'),
+};
+
 contextBridge.exposeInMainWorld('electronAPI', {
   platform: process.platform,
+  cache,
 
   // External links
   openExternal: (url: string) => ipcRenderer.invoke('open-external', url),

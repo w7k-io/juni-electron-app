@@ -13,20 +13,23 @@ interface IndexFileFormat {
 
 const HASH_REGEX = /^[a-f0-9]{64}$/;
 
+function isFiniteNonNegativeNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0;
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
 function isValidEntry(entry: unknown): entry is IndexEntry {
   if (typeof entry !== 'object' || entry === null) return false;
   const e = entry as Partial<IndexEntry>;
-  return (
-    typeof e.hash === 'string' &&
-    HASH_REGEX.test(e.hash) &&
-    typeof e.originalUrl === 'string' &&
-    typeof e.contentType === 'string' &&
-    typeof e.sizeBytes === 'number' &&
-    Number.isFinite(e.sizeBytes) &&
-    e.sizeBytes >= 0 &&
-    typeof e.lastAccessAt === 'number' &&
-    Number.isFinite(e.lastAccessAt)
-  );
+  if (typeof e.hash !== 'string' || !HASH_REGEX.test(e.hash)) return false;
+  if (typeof e.originalUrl !== 'string') return false;
+  if (typeof e.contentType !== 'string') return false;
+  if (!isFiniteNonNegativeNumber(e.sizeBytes)) return false;
+  if (!isFiniteNumber(e.lastAccessAt)) return false;
+  return true;
 }
 
 export class HlsCacheIndex {
@@ -137,10 +140,14 @@ export class HlsCacheIndex {
       return;
     }
     for (const file of files) {
-      if (!file.endsWith('.bin')) continue;
-      const hash = file.replace(/\.bin$/, '');
+      const baseName = path.basename(file);
+      if (!baseName.endsWith('.bin')) continue;
+      const hash = baseName.slice(0, -4);
       if (!HASH_REGEX.test(hash)) continue;
-      const stats = await fs.stat(path.join(segmentsDir, file));
+      // SECURITY: rebuild path from the validated hash, not the raw readdir
+      // entry, so static analysis can verify there's no traversal sequence.
+      const safeName = `${hash}.bin`;
+      const stats = await fs.stat(path.join(segmentsDir, safeName));
       const entry: IndexEntry = {
         hash,
         originalUrl: `<rebuilt:${hash}>`,

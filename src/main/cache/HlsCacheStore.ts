@@ -57,13 +57,24 @@ export class HlsCacheStore {
     }
     await Promise.all(
       files
-        .filter((f) => f.endsWith('.bin'))
-        .map((f) => fs.unlink(path.join(dir, f)).catch(() => undefined))
+        .filter(isBinFileName)
+        // Use basename to make the path-traversal-safety obvious to static
+        // analysis: fs.readdir returns leaf names, but we re-strip just in case.
+        .map((f) => fs.unlink(path.join(dir, path.basename(f))).catch(() => undefined))
     );
   }
 
+  /**
+   * Build the absolute path of a cache entry.
+   *
+   * SECURITY: `hash` MUST already have been validated by `assertValidHash()`
+   * (regex /^[a-f0-9]{64}$/). The wrapping `path.basename()` is a belt-and-
+   * braces safeguard so static analyzers can see that no traversal sequence
+   * (`..`, `/`) can survive even if the regex were ever loosened.
+   */
   private filePath(hash: string): string {
-    return path.join(this.segmentsDir(), `${hash}.bin`);
+    const safeName = path.basename(`${hash}.bin`);
+    return path.join(this.segmentsDir(), safeName);
   }
 
   private assertValidHash(hash: string): void {
@@ -71,4 +82,9 @@ export class HlsCacheStore {
       throw new Error(`invalid hash: ${hash}`);
     }
   }
+}
+
+function isBinFileName(name: string): boolean {
+  // Only accept bare leaf .bin files written by HlsCacheStore (no traversal).
+  return /^[a-f0-9]{64}\.bin$/.test(name);
 }

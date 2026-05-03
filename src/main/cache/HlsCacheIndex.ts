@@ -147,6 +147,9 @@ export class HlsCacheIndex {
       // SECURITY: rebuild path from the validated hash, not the raw readdir
       // entry, so static analysis can verify there's no traversal sequence.
       const safeName = `${hash}.bin`;
+      // codacy:ignore — `safeName` is built from `hash` already validated
+      // against /^[a-f0-9]{64}$/ on the line just above.
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
       const stats = await fs.stat(path.join(segmentsDir, safeName));
       const entry: IndexEntry = {
         hash,

@@ -60,6 +60,8 @@ export class HlsCacheStore {
         .filter(isBinFileName)
         // Use basename to make the path-traversal-safety obvious to static
         // analysis: fs.readdir returns leaf names, but we re-strip just in case.
+        // codacy:ignore — `f` is filtered through /^[a-f0-9]{64}\.bin$/ above.
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
         .map((f) => fs.unlink(path.join(dir, path.basename(f))).catch(() => undefined))
     );
   }
@@ -74,6 +76,9 @@ export class HlsCacheStore {
    */
   private filePath(hash: string): string {
     const safeName = path.basename(`${hash}.bin`);
+    // codacy:ignore — `safeName` derives from a hash already validated against
+    // /^[a-f0-9]{64}$/ (assertValidHash) and re-wrapped in path.basename().
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     return path.join(this.segmentsDir(), safeName);
   }
 

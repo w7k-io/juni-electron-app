@@ -1,0 +1,18 @@
+# Semgrep ignore patterns for juni-electron-app
+#
+# Each entry MUST have a justification (why this is not a real risk).
+# Audit dates and reviewers are tracked in the security audit register.
+
+# === Standard exclusions ===
+node_modules/
+dist/
+out/
+electron-dist/
+coverage/
+.git/
+
+# === Test fixtures and snapshots ===
+# Generated/copied test data, not application code.
+**/*.test.js.snap
+**/*.test.ts.snap
+**/__snapshots__/**

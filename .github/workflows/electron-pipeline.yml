@@ -23,10 +23,53 @@ on:
 
 jobs:
   # ========================================
+  # ÉTAPE 0: Sécurité (Trivy fs + Semgrep SAST) — bloquant sur PR
+  # ========================================
+  security-trivy:
+    name: 🛡️ Security — Trivy (deps + secrets + misconfig)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Trivy filesystem scan (vuln + secret + misconfig) — CRITICAL/HIGH bloquant
+        # Pinned to commit SHA per Codacy/Opengrep third-party-action-not-pinned-to-commit-sha (v0.36.0)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: 'true'
+          scanners: 'vuln,secret,misconfig'
+          skip-dirs: 'node_modules,dist,out,electron-dist'
+
+  security-semgrep:
+    name: 🛡️ Security — Semgrep SAST
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep:1.161.0
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run Semgrep — ERROR bloquant
+        run: |
+          semgrep scan \
+            --config p/security-audit \
+            --config p/owasp-top-ten \
+            --config p/javascript \
+            --config p/typescript \
+            --severity ERROR \
+            --error \
+            --metrics off \
+            .
+
+  # ========================================
   # ÉTAPE 1: Build Electron (avec tests intégrés)
   # ========================================
   build:
     name: Build
+    needs: [security-trivy, security-semgrep]
     uses: ./.github/workflows/electron-build.yml
     with:
       version: ${{ github.event.inputs.version || '' }}

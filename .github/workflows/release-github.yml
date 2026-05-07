@@ -41,8 +41,10 @@ jobs:
           ls -lh ./release-flat/
 
       - name: Generate release notes
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
         run: |
-          echo "# Kagron v${{ inputs.version }}" > release-notes.md
+          echo "# Kagron v${RELEASE_VERSION}" > release-notes.md
           echo "" >> release-notes.md
           echo "## Installation" >> release-notes.md
           echo "" >> release-notes.md
@@ -62,7 +64,7 @@ jobs:
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -n "$LAST_TAG" ]; then
             echo "### Commits depuis $LAST_TAG" >> release-notes.md
-            git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" >> release-notes.md
+            git log "$LAST_TAG"..HEAD --pretty=format:"- %s (%h)" >> release-notes.md
           else
             echo "### Commits récents" >> release-notes.md
             git log -10 --pretty=format:"- %s (%h)" >> release-notes.md
@@ -92,10 +94,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release Summary
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          REPO_FULL_NAME: ${{ github.repository }}
         run: |
           echo "Release créée avec succès!"
-          echo "  Version: v${{ inputs.version }}"
-          echo "  URL: https://github.com/${{ github.repository }}/releases/tag/v${{ inputs.version }}"
+          echo "  Version: v${RELEASE_VERSION}"
+          echo "  URL: https://github.com/${REPO_FULL_NAME}/releases/tag/v${RELEASE_VERSION}"
           echo ""
           echo "Fichiers publiés:"
           ls -1 ./release-flat/*.zip

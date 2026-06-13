@@ -7,10 +7,11 @@ let splashWindow: BrowserWindow | null = null;
 /**
  * Content Security Policy applied to the webapp loaded in the Electron shell.
  *
- * IMPORTANT: this duplicates the header CSP set server-side by juni-app
- * (`ResponseHeadersFilter.java`). Both policies are enforced simultaneously
- * inside Electron, so the most restrictive one wins — any host the webapp needs
- * to reach via `fetch`/XHR MUST be present in BOTH or the request is blocked.
+ * IMPORTANT: `onHeadersReceived` below REPLACES the CSP header sent by juni-app
+ * (`ResponseHeadersFilter.java`) — the renderer only ever sees this policy, not
+ * the server one. So this string must stay a SUPERSET of every host the webapp
+ * reaches via `fetch`/XHR; a host present in the backend CSP but missing here is
+ * still blocked. Keep the two in sync.
  *
  * `download.kagron.app` serves the merged playlist MP4 the coach "Télécharger"
  * button fetches (JUNI-744). Omitting it here blocked that fetch with a CSP

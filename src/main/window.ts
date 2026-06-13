@@ -4,6 +4,25 @@ import path from 'path';
 let mainWindow: BrowserWindow | null = null;
 let splashWindow: BrowserWindow | null = null;
 
+/**
+ * Content Security Policy applied to the webapp loaded in the Electron shell.
+ *
+ * IMPORTANT: this duplicates the header CSP set server-side by juni-app
+ * (`ResponseHeadersFilter.java`). Both policies are enforced simultaneously
+ * inside Electron, so the most restrictive one wins — any host the webapp needs
+ * to reach via `fetch`/XHR MUST be present in BOTH or the request is blocked.
+ *
+ * `download.kagron.app` serves the merged playlist MP4 the coach "Télécharger"
+ * button fetches (JUNI-744). Omitting it here blocked that fetch with a CSP
+ * violation surfacing as "Failed to fetch", while the backend CSP allowed it.
+ */
+export const CONTENT_SECURITY_POLICY =
+  "default-src 'self' 'unsafe-inline' data: http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://unpkg.com; " +
+  "connect-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://media.kagron.app; " +
+  "style-src 'self' 'unsafe-inline' https://unpkg.com; " +
+  "media-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app blob:; " +
+  "object-src 'none'";
+
 export function getMainWindow(): BrowserWindow | null {
   return mainWindow;
 }
@@ -54,13 +73,7 @@ export function createWindow(): BrowserWindow {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': [
-          "default-src 'self' 'unsafe-inline' data: http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://unpkg.com; " +
-          "connect-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app; " +
-          "style-src 'self' 'unsafe-inline' https://unpkg.com; " +
-          "media-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app blob:; " +
-          "object-src 'none'"
-        ],
+        'Content-Security-Policy': [CONTENT_SECURITY_POLICY],
       },
     });
   });

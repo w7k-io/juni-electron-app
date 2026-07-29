@@ -13,17 +13,24 @@ on:
         description: 'Version to use (optional, auto-calculated if empty)'
         required: false
         type: string
+    # Signing secrets are optional so this workflow can still be CALLED from a
+    # context that has none — typically a Dependabot pull request, where GitHub
+    # withholds repository secrets. With `required: true`, `secrets: inherit`
+    # resolves to nothing and GitHub refuses to instantiate the workflow at all:
+    # every job fails before running a single step ("Secret APPLE_ID is
+    # required, but not provided while calling"), so the PR is never tested.
+    # The signed build itself is skipped on pull requests (see the `build` job).
     secrets:
       APPLE_ID:
-        required: true
+        required: false
       APPLE_APP_SPECIFIC_PASSWORD:
-        required: true
+        required: false
       APPLE_TEAM_ID:
-        required: true
+        required: false
       CSC_LINK:
-        required: true
+        required: false
       CSC_KEY_PASSWORD:
-        required: true
+        required: false
       CODACY_API_TOKEN:
         required: false
     outputs:
@@ -61,6 +68,11 @@ jobs:
   build:
     name: Build macOS Universal
     needs: [version, test]
+    # Skipped on pull requests: the signing certificate and notarization
+    # credentials are unavailable there, so a signed build cannot succeed.
+    # Same rationale as the E2E job in electron-pipeline.yml. Pull requests
+    # still run Semgrep, Trivy, version calculation and the Jest suite.
+    if: ${{ github.event_name != 'pull_request' }}
     runs-on: macos-latest
 
     steps:

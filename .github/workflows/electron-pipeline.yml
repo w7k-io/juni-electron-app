@@ -52,6 +52,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # secrets-inherit is excluded: it flags `secrets: inherit` on calls to our
+      # OWN reusable workflows in this repo (electron-build, test-components,
+      # test-e2e-macos, release-github). The rule targets third-party workflows,
+      # where inheriting every secret is a real exfiltration risk — that threat
+      # does not apply to workflows we author and review in-tree.
+      # Removing it would mean threading the 5 Apple signing secrets through
+      # explicit maps, which risks breaking DMG signing/notarization for no
+      # security gain. Revisit if we ever call an external reusable workflow.
       - name: Run Semgrep — ERROR bloquant
         run: |
           semgrep scan \
@@ -59,6 +67,7 @@ jobs:
             --config p/owasp-top-ten \
             --config p/javascript \
             --config p/typescript \
+            --exclude-rule yaml.github-actions.security.secrets-inherit.secrets-inherit \
             --severity ERROR \
             --error \
             --metrics off \

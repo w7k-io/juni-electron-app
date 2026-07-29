@@ -4,16 +4,21 @@ const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours
 const FEED_URL = `https://update.electronjs.org/w7k-io/juni-electron-app/${process.platform}-${process.arch}/${app.getVersion()}`;
 
 /**
- * Electron 38+ (Chromium 139+) dropped macOS 11 Big Sur: builds from that
- * version on declare LSMinimumSystemVersion 12.0 and refuse to launch on an
- * older system.
+ * Minimum macOS the app we ship can actually launch on. Electron raises this
+ * floor regularly and each bump strands a slice of users:
+ *   - Electron 38 (Chromium 139) dropped macOS 11 Big Sur  -> floor 12
+ *   - Electron 43                 dropped macOS 12 Monterey -> floor 13
  *
- * Squirrel.Mac does not filter releases by OS version. Without this guard a
- * Big Sur user downloads the update, clicks "Restart", and ends up with an app
- * that never comes back — silently, with no way to understand why and no way
- * back. Freezing them on a working version is the lesser evil.
+ * Squirrel.Mac does not filter releases by OS version. Without this guard the
+ * user downloads the update, clicks "Restart", and ends up with an app that
+ * never comes back — silently, with no way to understand why and no way back.
+ * Freezing them on a working version is the lesser evil.
+ *
+ * KEEP IN SYNC with the Electron major in package.json, and always ship the
+ * raised floor BEFORE the Electron bump: the guard only protects users whose
+ * installed build already carries it.
  */
-const MIN_SUPPORTED_MACOS_MAJOR = 12;
+const MIN_SUPPORTED_MACOS_MAJOR = 13;
 
 /** Major version of the host macOS, or null when it cannot be determined. */
 export function getMacOsMajorVersion(systemVersion: string): number | null {

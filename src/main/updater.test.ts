@@ -24,14 +24,15 @@ describe('getMacOsMajorVersion', () => {
 });
 
 describe('canReceiveUpdates', () => {
-  // Electron 38+ (Chromium 139+) requires macOS 12. Shipping an update to an
-  // older system leaves the user with an app that no longer launches, and
-  // Squirrel.Mac does not filter releases by OS version.
-  it.each(['11.7.10', '11.0', '10.15.7'])('blocks updates on macOS %s', (version) => {
+  // Electron 43 requires macOS 13 (Ventura) — one notch above the macOS 12 that
+  // Electron 38 introduced. Shipping an update to an older system leaves the
+  // user with an app that no longer launches, and Squirrel.Mac does not filter
+  // releases by OS version.
+  it.each(['12.6.1', '12.0', '11.7.10', '10.15.7'])('blocks updates on macOS %s', (version) => {
     expect(canReceiveUpdates('darwin', version)).toBe(false);
   });
 
-  it.each(['12.0', '12.6.1', '15.2', '26.1'])('allows updates on macOS %s', (version) => {
+  it.each(['13.0', '13.6.4', '15.2', '26.1'])('allows updates on macOS %s', (version) => {
     expect(canReceiveUpdates('darwin', version)).toBe(true);
   });
 

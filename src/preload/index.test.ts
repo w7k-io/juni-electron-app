@@ -25,7 +25,10 @@ describe('preload — HLS cache bridge (JUNI-706)', () => {
 
     it('exposes cache namespace on window.electronAPI', () => {
         expect(source).toMatch(/const\s+cache\s*=/);
-        expect(source).toMatch(/platform:\s*process\.platform,\s*cache,/);
+        // Asserts `cache` sits inside the exposeInMainWorld payload without
+        // pinning the keys around it — the previous regex required `platform`
+        // and `cache` to be adjacent, so adding any sibling key broke it.
+        expect(source).toMatch(/exposeInMainWorld\('electronAPI',\s*\{[\s\S]*?^\s*cache,$/m);
     });
 
     it('wires every cache:* IPC channel', () => {

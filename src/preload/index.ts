@@ -19,6 +19,11 @@ const cache = {
 
 contextBridge.exposeInMainWorld('electronAPI', {
   platform: process.platform,
+  // Host OS version (e.g. "12.6.1" on macOS). Exposed so the web app can
+  // report it as an analytics event: the User-Agent is useless here, Chromium
+  // freezes it at "10_15_7" on every macOS since Big Sur. Without this we
+  // cannot know how many desktop users a macOS-12 minimum would strand.
+  osVersion: process.getSystemVersion(),
   cache,
 
   // External links

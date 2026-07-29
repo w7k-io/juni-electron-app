@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - name: Checkout (for test scripts)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
 
@@ -29,7 +29,7 @@ jobs:
           npx playwright install --with-deps
 
       - name: Download ZIP
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.artifact_name }}
           path: ./test-artifacts
@@ -58,7 +58,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-results-macos
           path: |

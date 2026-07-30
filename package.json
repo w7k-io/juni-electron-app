@@ -2,6 +2,9 @@
   "name": "juni",
   "productName": "Kagron",
   "version": "2.572.92",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "description": "Kagron Desktop Application",
   "license": "PROPRIETARY",
   "author": "Wistiteek",

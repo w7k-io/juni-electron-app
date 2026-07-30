@@ -22,10 +22,11 @@ updates:
         # Revisit once ts-jest supports TS 7 — the bump is unusable until then.
         update-types: ["version-update:semver-major"]
       - dependency-name: "@types/node"
-        # Must always track the Node runtime major (see .nvmrc / engines).
-        # Dependabot drifted these types to 25.x on a Node 22 runtime, typing
-        # the code against APIs absent at execution. Bump manually, together
-        # with the runtime. Cf JUNI-1181.
+        # Must track the Node major EMBEDDED BY ELECTRON, not the build Node:
+        # main process and preload run on Electron's own Node. Read it from the
+        # electron devDependency, not from .nvmrc — Electron 43 ships Node 24.18
+        # while the build still runs on 22. Bump manually, together with the
+        # electron major. Cf JUNI-1181.
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"

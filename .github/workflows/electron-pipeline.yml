@@ -29,7 +29,7 @@ jobs:
     name: 🛡️ Security — Trivy (deps + secrets + misconfig)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Trivy filesystem scan (vuln + secret + misconfig) — CRITICAL/HIGH bloquant
         # Pinned to commit SHA per Codacy/Opengrep third-party-action-not-pinned-to-commit-sha (v0.36.0)
@@ -50,7 +50,7 @@ jobs:
     container:
       image: semgrep/semgrep:1.161.0
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # secrets-inherit is excluded: it flags `secrets: inherit` on calls to our
       # OWN reusable workflows in this repo (electron-build, test-components,

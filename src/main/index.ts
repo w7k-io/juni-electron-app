@@ -6,6 +6,7 @@ import { setupFileHandlers } from './ipc/file-handlers';
 import { setupMiscHandlers } from './ipc/misc-handlers';
 import { setupCacheHandlers } from './ipc/cache-handlers';
 import { setupAutoUpdater } from './updater';
+import { ALLOWED_APP_ORIGINS, isDetachedPanelUrl } from './window-open-policy';
 import path from 'path';
 
 // Store the save path chosen by the user (set before downloadURL triggers will-download)
@@ -63,13 +64,7 @@ app.on('activate', () => {
 app.on('web-contents-created', (_event, contents) => {
   contents.on('will-navigate', (navigationEvent, navigationUrl) => {
     const parsedUrl = new URL(navigationUrl);
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'http://localhost:8080',
-      'https://kagron.app',
-      'https://juni.w7k.app',
-    ];
-    if (!allowedOrigins.includes(parsedUrl.origin)) {
+    if (!ALLOWED_APP_ORIGINS.includes(parsedUrl.origin)) {
       navigationEvent.preventDefault();
     }
   });
@@ -77,6 +72,17 @@ app.on('web-contents-created', (_event, contents) => {
   // Prevent new windows from opening (e.g. <a target="_blank">)
   // Instead, trigger a download for file URLs or deny the window
   contents.setWindowOpenHandler(({ url }) => {
+    // JUNI-1231: the ONLY allowed window.open — the detached sequence panel
+    // (double-screen workspace), same-origin route checked by the policy.
+    if (isDetachedPanelUrl(url)) {
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          autoHideMenuBar: true,
+        },
+      };
+    }
+
     // Allow blob: URLs to be handled as downloads
     if (url.startsWith('blob:')) {
       return { action: 'deny' };

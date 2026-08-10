@@ -10,6 +10,8 @@ describe('isDetachedPanelUrl', () => {
         'https://juni.w7k.app/review/detached-panel',
         'http://localhost:3000/review/detached-panel',
         'http://localhost:8080/review/detached-panel',
+        // Trailing slash added by a router/proxy must not break the feature (Copilot PR #47)
+        'https://kagron.app/review/detached-panel/',
     ])('allows the detached panel route on app origins: %s', (url) => {
         expect(isDetachedPanelUrl(url)).toBe(true);
     });

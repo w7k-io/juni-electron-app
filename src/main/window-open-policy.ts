@@ -25,5 +25,7 @@ export function isDetachedPanelUrl(url: string): boolean {
   } catch {
     return false;
   }
-  return ALLOWED_APP_ORIGINS.includes(parsed.origin) && parsed.pathname === DETACHED_PANEL_PATH;
+  // Tolerate a single trailing slash added by routers/proxies (Copilot PR #47).
+  const pathname = parsed.pathname.replace(/\/$/, '');
+  return ALLOWED_APP_ORIGINS.includes(parsed.origin) && pathname === DETACHED_PANEL_PATH;
 }

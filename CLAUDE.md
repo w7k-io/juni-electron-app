@@ -111,6 +111,13 @@ openExternal(url)           // Ouvre navigateur
 - `nodeIntegration: false`
 - `contextIsolation: true`
 - CSP configuree pour localhost, kagron.app, Azure Blob
+- `setWindowOpenHandler` : tout `window.open` est refuse (ou converti en telechargement
+  pour les URLs media), SAUF le **panneau d'edition detache** (JUNI-1231) —
+  meme origine app + path exact `/review/detached-panel`, verifie par la fonction pure
+  `src/main/window-open-policy.ts` (`isDetachedPanelUrl`). `ALLOWED_APP_ORIGINS` de ce
+  module est la source unique des origines app (partagee avec `will-navigate`).
+  Sentinelles : `window-open-policy.test.ts` + describe `JUNI-1231` de `index.test.ts`
+  (un seul `action: 'allow'` dans le handler).
 
 ## Build macOS
 

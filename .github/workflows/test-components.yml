@@ -50,6 +50,13 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           api-token: ${{ secrets.CODACY_API_TOKEN }}
+          # Un jeton de COMPTE ne designe aucun projet : sans ces trois lignes, le reporter
+          # construit une URL invalide et l'envoi echoue en 404 ("Request URL not found"),
+          # alors que le rapport a bien ete trouve et parse. Un jeton de PROJET s'en passerait,
+          # mais il en faudrait un par depot. Cf .claude/rules/codacy-setup.md.
+          organization-provider: gh
+          username: w7k-io
+          project-name: juni-electron-app
           coverage-reports: coverage/lcov.info
 
   test-summary:

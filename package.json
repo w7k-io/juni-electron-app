@@ -43,7 +43,7 @@
     "@tsconfig/node22": "^22.0.5",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.13.3",
-    "electron": "^43.2.0",
+    "electron": "^43.5.0",
     "glob": "^13.0.6",
     "jest": "^30.4.2",
     "playwright": "^1.56.0",

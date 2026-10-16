@@ -153,3 +153,19 @@ jobs:
             echo "Vérifiez les étapes en échec ci-dessus."
             exit 1
           fi
+
+  # ========================================
+  # ÉTAPE 5: Déclaration à Astrolabe (release manager)
+  # ========================================
+  # Job séparé : relancer une déclaration en échec ne relance jamais la release.
+  astrolabe:
+    name: Declare to Astrolabe
+    needs: [build, release]
+    if: ${{ needs.release.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: w7k-io/w7k-io-gh/astrolabe-release@main
+        with:
+          component: juni-electron-app
+          version: ${{ needs.build.outputs.version }}
+          token: ${{ secrets.ASTROLABE_PIPELINE_TOKEN }}

@@ -18,10 +18,10 @@ let splashWindow: BrowserWindow | null = null;
  * violation surfacing as "Failed to fetch", while the backend CSP allowed it.
  */
 export const CONTENT_SECURITY_POLICY =
-  "default-src 'self' 'unsafe-inline' data: http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://unpkg.com; " +
-  "connect-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://media.kagron.app; " +
+  "default-src 'self' 'unsafe-inline' data: http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://unpkg.com; " +
+  "connect-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://media.kagron.app; " +
   "style-src 'self' 'unsafe-inline' https://unpkg.com; " +
-  "media-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net https://juniproductionsa.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app blob:; " +
+  "media-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app blob:; " +
   "object-src 'none'";
 
 export function getMainWindow(): BrowserWindow | null {

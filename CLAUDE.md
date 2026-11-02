@@ -110,7 +110,7 @@ openExternal(url)           // Ouvre navigateur
 
 - `nodeIntegration: false`
 - `contextIsolation: true`
-- CSP configuree pour localhost, kagron.app, Azure Blob
+- CSP configuree pour localhost, kagron.app, Azure Blob (`*.blob.core.windows.net`, plus aucun compte nomme : `juniproductionsa` supprime le 2026-11-02, JUNI-1845)
 - `setWindowOpenHandler` : tout `window.open` est refuse (ou converti en telechargement
   pour les URLs media), SAUF le **panneau d'edition detache** (JUNI-1231) —
   meme origine app + path exact `/review/detached-panel`, verifie par la fonction pure

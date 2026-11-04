@@ -6,10 +6,10 @@ Application desktop **macOS uniquement** pour Kagron (wrapper Electron). Windows
 
 | Composant | Version |
 |-----------|---------|
-| **Electron** | 43.2.0 (plancher macOS **13** — voir `MIN_SUPPORTED_MACOS_MAJOR` dans `src/main/updater.ts`) |
-| **Electron Forge** | 7.11.2 |
+| **Electron** | 43.8.7 (plancher macOS **13** — voir `MIN_SUPPORTED_MACOS_MAJOR` dans `src/main/updater.ts`) |
+| **Electron Forge** | 8.0.1 (classe `PublisherGitHub`, plus `PublisherGithub`; `maker-dmg` retiré, inutilisé) |
 | **TypeScript** | 5.9.3 (strict) |
-| **Node.js (app)** | **24.18** — celui embarqué par Electron 43, c'est lui qui exécute le main process et le preload |
+| **Node.js (app)** | **24.22** — celui embarqué par Electron 43, c'est lui qui exécute le main process et le preload |
 | **Node.js (build)** | **24** (`.nvmrc` + `engines`) — compilation TS, Forge, packaging |
 | **Playwright** | 1.62.0 (E2E) |
 | **Jest** | 30.4.2 (unit) |

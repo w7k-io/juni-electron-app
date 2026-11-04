@@ -1,5 +1,5 @@
 const { MakerZIP } = require('@electron-forge/maker-zip');
-const { PublisherGithub } = require('@electron-forge/publisher-github');
+const { PublisherGitHub } = require('@electron-forge/publisher-github');
 
 /** @type {import('@electron-forge/shared-types').ForgeConfig} */
 module.exports = {
@@ -40,7 +40,7 @@ module.exports = {
     new MakerZIP({}, ['darwin']),
   ],
   publishers: [
-    new PublisherGithub({
+    new PublisherGitHub({
       repository: {
         owner: 'w7k-io',
         name: 'juni-electron-app',

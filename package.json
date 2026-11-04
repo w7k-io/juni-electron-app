@@ -33,22 +33,25 @@
     "test:e2e:debug": "playwright test --debug"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^7.11.2",
-    "@electron-forge/maker-dmg": "^7.11.2",
-    "@electron-forge/maker-zip": "^7.11.2",
-    "@electron-forge/publisher-github": "^7.11.2",
+    "@electron-forge/cli": "^8.0.1",
+    "@electron-forge/maker-zip": "^8.0.1",
+    "@electron-forge/publisher-github": "^8.0.1",
     "@electron/notarize": "^3.1.1",
     "@electron/osx-sign": "^2.6.0",
     "@playwright/test": "^1.62.0",
     "@tsconfig/node22": "^22.0.5",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.13.3",
-    "electron": "^43.2.0",
-    "glob": "^13.0.6",
+    "electron": "^43.8.1",
+    "glob": "^14.0.3",
     "jest": "^30.4.2",
     "playwright": "^1.56.0",
     "ts-jest": "^29.4.12",
     "typescript": "^5.9.3"
   },
-  "packageManager": "npm@10.9.2"
+  "packageManager": "npm@10.9.2",
+  "overrides": {
+    "glob": "^14.0.3",
+    "minimatch": "^11.0.4"
+  }
 }

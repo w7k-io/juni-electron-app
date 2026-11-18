@@ -11,8 +11,8 @@ Application desktop **macOS uniquement** pour Kagron (wrapper Electron). Windows
 | **TypeScript** | 5.9.3 (strict) |
 | **Node.js (app)** | **24.22** — celui embarqué par Electron 43, c'est lui qui exécute le main process et le preload |
 | **Node.js (build)** | **24** (`.nvmrc` + `engines`) — compilation TS, Forge, packaging |
-| **Playwright** | 1.62.0 (E2E) |
-| **Jest** | 30.4.2 (unit) |
+| **Playwright** | 1.65.1 (E2E) |
+| **Jest** | 30.5.2 (unit) |
 
 > ⚠️ **`@types/node` suit le Node d'Electron, pas le `.nvmrc`.** Les deux valent 24 aujourd'hui, mais ils sont indépendants : au prochain palier Electron, lire la version dans `DEPS` du tag (`gh api "repos/electron/electron/contents/DEPS?ref=v<version>"`), pas dans le `.nvmrc`. Cf [`node-version-policy.md`](https://github.com/w7k-io/juni-claude-rules/blob/main/rules/node-version-policy.md).
 

@@ -16,10 +16,13 @@ let splashWindow: BrowserWindow | null = null;
  * `download.kagron.app` serves the merged playlist MP4 the coach "Télécharger"
  * button fetches (JUNI-744). Omitting it here blocked that fetch with a CSP
  * violation surfacing as "Failed to fetch", while the backend CSP allowed it.
+ *
+ * `download-cloud.kagron.app` is the Azure fallback video service (JUNI-2021): when the Mac
+ * Mini is down or overloaded, the job runs there and the download link points there.
  */
 export const CONTENT_SECURITY_POLICY =
-  "default-src 'self' 'unsafe-inline' data: http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://unpkg.com; " +
-  "connect-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://media.kagron.app; " +
+  "default-src 'self' 'unsafe-inline' data: http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://download-cloud.kagron.app https://unpkg.com; " +
+  "connect-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net http://127.0.0.1:10000 https://download.kagron.app https://download-cloud.kagron.app https://media.kagron.app; " +
   "style-src 'self' 'unsafe-inline' https://unpkg.com; " +
   "media-src 'self' http://localhost:8080 https://kagron.app https://juni.w7k.app https://*.blob.core.windows.net http://127.0.0.1:10000 https://media.kagron.app blob:; " +
   "object-src 'none'";

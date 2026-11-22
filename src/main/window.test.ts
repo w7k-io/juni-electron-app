@@ -30,6 +30,14 @@ describe('Electron CSP', () => {
     );
   });
 
+  // JUNI-2021 — when the Mac Mini is down or overloaded, juni-app sends the job to the Azure
+  // fallback video service, and the download link points there. Same "Failed to fetch" trap.
+  it('allows the fallback video service host (JUNI-2021)', () => {
+    expect(directiveSources(CONTENT_SECURITY_POLICY, 'connect-src')).toContain(
+      'https://download-cloud.kagron.app',
+    );
+  });
+
   it('keeps the core prod hosts reachable via connect-src', () => {
     const connect = directiveSources(CONTENT_SECURITY_POLICY, 'connect-src');
     expect(connect).toContain("'self'");
